@@ -5,34 +5,22 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
   mode: 'development',
-  optimization: {
-    splitChunks: {
-      cacheGroups: {
-        commons: {
-          test: /[\\/]node_modules[\\/]/,
-          name: 'vendor',
-          chunks: 'all'
-        }
-      }
-    }
-  },
   entry: [
-    './src/app.js'
+    './src/index.js'
   ],
   output: {
     filename: 'bundle.js'
-  },
-  devServer: {
-    hot: true,
-    watchOptions: {
-      poll: true
-    }
   },
   module: {
     rules: [
       {
         test: /\.(js|vue)$/,
-        use: 'eslint-loader',
+        use: [{
+          loader: 'eslint-loader',
+          options: {
+            emitWarning: true
+          }
+        }],
         enforce: 'pre'
       },
       {
@@ -51,6 +39,20 @@ module.exports = {
         use: 'babel-loader'
       }
     ]
+  },
+  resolve: {
+    alias: {
+      'vue$': 'vue/dist/vue.esm.js'
+    },
+    extensions: ['*', '.js', '.vue', '.json']
+  },
+  devServer: {
+    historyApiFallback: true,
+    noInfo: true,
+    hot: true,
+    watchOptions: {
+      poll: true
+    }
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
