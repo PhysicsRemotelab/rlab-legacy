@@ -1,14 +1,15 @@
 import Vue from 'vue'
-import VueRouter from 'vue-router'
 import App from './App'
-import router from './routes'
+import router from './router'
+import store from './store/store'
 
-Vue.use(VueRouter)
 Vue.config.productionTip = false
 
-/* eslint-disable-next-line no-new */
-new Vue({
+const app = new Vue({
   router,
+  store,
   el: '#app',
   render: h => h(App)
 })
+
+export default app

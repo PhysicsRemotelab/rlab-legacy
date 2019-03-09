@@ -1,7 +1,7 @@
 <template>
     <div>
         <AppHeader />
-        Landing page.
+        Lab page
         <AppFooter />
     </div>
 </template>

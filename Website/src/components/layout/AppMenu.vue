@@ -1,9 +1,9 @@
 <template>
     <div>
-        <router-link to='/'>Landing</router-link>
-        <router-link to='/info'>Info</router-link>
-        <router-link to='/labs'>Labs</router-link>
-        <router-link to='/results'>Results</router-link>
+        <router-link :to="{ name: 'landing-page' }">Landing</router-link>
+        <router-link :to="{ name: 'info-page' }">Info</router-link>
+        <router-link :to="{ name: 'labs-page' }">Labs</router-link>
+        <router-link :to="{ name: 'results-page' }">Results</router-link>
     </div>
 </template>
 
