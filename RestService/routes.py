@@ -1,4 +1,4 @@
-import json 
+import json
 from datetime import date
 from flask import jsonify, Blueprint, request
 from queries import *

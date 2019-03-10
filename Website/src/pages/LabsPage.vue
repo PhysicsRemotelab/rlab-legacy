@@ -1,8 +1,13 @@
 <template>
     <div>
         <AppHeader />
-        Labs page
-        <LabList />
+        <v-container grid-list-md text-xs-center>
+            <v-layout row>
+                <v-flex xs12>
+                    <LabList />
+                </v-flex>
+            </v-layout>
+        </v-container>
         <AppFooter />
     </div>
 </template>
@@ -10,7 +15,6 @@
 <script>
 import AppHeader from '../components/layout/AppHeader'
 import AppFooter from '../components/layout/AppFooter'
-import LabService from '../services/LabService'
 import LabList from '../components/ui/LabList'
 
 export default {

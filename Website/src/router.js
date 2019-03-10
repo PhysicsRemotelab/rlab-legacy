@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import LandingPage from './pages/LandingPage'
-import InfoPage from './pages/InfoPage'
+import ManualPage from './pages/ManualPage'
 import LabsPage from './pages/LabsPage'
 import LabPage from './pages/LabPage'
 import ResultsPage from './pages/ResultsPage'
@@ -15,9 +15,9 @@ const routes = [
     component: LandingPage 
   },
   { 
-    path: '/info', 
-    name: 'info-page',
-    component: InfoPage 
+    path: '/manual', 
+    name: 'manual-page',
+    component: ManualPage 
   },
   { 
     path: '/labs', 

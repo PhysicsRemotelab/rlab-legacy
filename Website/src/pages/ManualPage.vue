@@ -5,7 +5,7 @@
                 <v-layout row wrap>
                     <v-flex xs12>
                         <v-card color="white">
-                            <v-card-text>Esileht siin</v-card-text>
+                            <v-card-text>Kasutusjuhendid siin</v-card-text>
                         </v-card>
                     </v-flex>
                 </v-layout>

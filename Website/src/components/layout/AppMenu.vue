@@ -1,10 +1,17 @@
 <template>
-    <div>
-        <router-link :to="{ name: 'landing-page' }">Landing</router-link>
-        <router-link :to="{ name: 'info-page' }">Info</router-link>
-        <router-link :to="{ name: 'labs-page' }">Labs</router-link>
-        <router-link :to="{ name: 'results-page' }">Results</router-link>
-    </div>
+    <v-toolbar app dark color="primary">
+        <v-toolbar-items>
+            <v-toolbar-side-icon>
+                <v-avatar color="grey lighten-4">
+                    <img src="/img/taltech_logo.png" alt="avatar">
+                </v-avatar>
+            </v-toolbar-side-icon>
+            <v-btn flat to="/">Esileht</v-btn>
+            <v-btn flat to="/labs">Laborid</v-btn>
+            <v-btn flat to="/manual">Kasutusjuhendid</v-btn>
+            <v-btn flat to="/results">Mõõtmistulemused</v-btn>
+        </v-toolbar-items>
+    </v-toolbar>
 </template>
 
 <script>
