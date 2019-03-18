@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import LabService from '../services/LabService'
+import RestService from './services/RestService'
 
 Vue.use(Vuex)
 
@@ -11,15 +11,6 @@ const store = new Vuex.Store({
         measurements: []
     },
     getters: {
-        labCount() {
-
-        },
-        availableLabs(state, getters) {
-            return state.labs.filter(lab => lab.taken === false)
-        },
-        unavailableLabs(state, getters) {
-            return state.labs.filter(lab => lab.taken === true)
-        },
         getLabs(state, getters) {
             return state.labs
         },
@@ -29,7 +20,7 @@ const store = new Vuex.Store({
     },
     actions: {
         fetchLabs({ commit }) {
-            LabService.getLabs()
+            RestService.getLabsAPI()
             .then(response => {
                 commit('setLabs', response.data)
             })
@@ -38,7 +29,7 @@ const store = new Vuex.Store({
             })
         },
         fetchMeasurements({ commit }) {
-            LabService.getMeasurements()
+            RestService.getMeasurementsAPI()
             .then(response => {
                 commit('setMeasurements', response.data)
             })
@@ -48,11 +39,11 @@ const store = new Vuex.Store({
         }
     },
     mutations: {
-        setLabs(state, labs) {
-            state.labs = labs
+        setLabs(state, data) {
+            state.labs = data
         },
-        setMeasurements(state, measurements) {
-            state.measurements = measurements
+        setMeasurements(state, data) {
+            state.measurements = data
         }
     }
 })

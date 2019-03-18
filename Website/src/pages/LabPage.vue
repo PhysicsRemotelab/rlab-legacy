@@ -1,19 +1,19 @@
 <template>
     <div>
         <AppHeader />
-        Lab page
-        <AppFooter />
+        <div class="jumbotron">
+            <h1 class="display-4">Labor</h1>
+            <p class="lead">Mõõtmine siin</p>
+        </div>
     </div>
 </template>
 
 <script>
-import AppHeader from '../components/layout/AppHeader'
-import AppFooter from '../components/layout/AppFooter'
+import AppHeader from '../components/AppHeader'
 
 export default {
     components: {
-        AppHeader,
-        AppFooter
+        AppHeader
     }
 }
 </script>

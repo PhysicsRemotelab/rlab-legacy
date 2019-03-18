@@ -1,0 +1,41 @@
+<template>
+    <div>
+        <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Labor</th>
+                <th scope="col">Tulemus</th>
+                <th scope="col">Mõõdetud</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for='m in measurements' :key='m.id'>
+                <th scope="row">{{ m.id }}</th>
+                <td>{{ m.lab_id.name }}</td>
+                <td>{{ m.results }}</td>
+                <td>{{ m.created }}</td>
+            </tr>
+        </tbody>
+        </table>
+    </div>
+</template>
+
+<script>
+export default {
+    components: {
+        
+    },
+    computed: {
+        measurements() {
+            return this.$store.getters.getMeasurements
+        }
+    },
+    created() {
+        this.$store.dispatch('fetchMeasurements')
+    }
+}
+</script>
+
+<style>
+</style>

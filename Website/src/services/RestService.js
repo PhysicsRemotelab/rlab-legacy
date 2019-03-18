@@ -10,13 +10,13 @@ const apiClient = axios.create({
 })
 
 export default {
-    getLabs() {
+    getLabsAPI() {
         return apiClient.get('/labs/')
     },
-    getLab(id) {
+    getLabAPI(id) {
         return apiClient.get('/labs/' + id)
     },
-    getMeasurements() {
+    getMeasurementsAPI() {
         return apiClient.get('/measurements/')
     }
 }

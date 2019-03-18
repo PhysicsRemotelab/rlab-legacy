@@ -1,27 +1,19 @@
 <template>
     <div>
         <AppHeader />
-            <v-container grid-list-md text-xs-center>
-                <v-layout row wrap>
-                    <v-flex xs12>
-                        <v-card color="white">
-                            <v-card-text>Esileht siin</v-card-text>
-                        </v-card>
-                    </v-flex>
-                </v-layout>
-            </v-container>
-        <AppFooter />
+        <div class="jumbotron">
+            <h1 class="display-4">Esileht</h1>
+            <p class="lead">Kaugjuhtivuslabori veebisait.</p>
+        </div>
     </div>
 </template>
 
 <script>
-import AppHeader from '../components/layout/AppHeader'
-import AppFooter from '../components/layout/AppFooter'
+import AppHeader from '../components/AppHeader'
 
 export default {
     components: {
-        AppHeader,
-        AppFooter
+        AppHeader
     }
 }
 </script>

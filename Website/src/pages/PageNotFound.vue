@@ -2,23 +2,20 @@
     <div>
         <AppHeader />
         <div class="jumbotron">
-            <LabList />
+            <h1 class="display-4">Lehekülge ei leitud.</h1>
         </div>
     </div>
 </template>
 
 <script>
 import AppHeader from '../components/AppHeader'
-import LabList from '../components/LabList'
 
 export default {
     components: {
-        AppHeader,
-        LabList
+        AppHeader
     }
 }
 </script>
 
 <style>
-
 </style>

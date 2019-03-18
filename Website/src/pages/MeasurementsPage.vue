@@ -2,23 +2,23 @@
     <div>
         <AppHeader />
         <div class="jumbotron">
-            <LabList />
+            <h1 class="display-4">Mõõtmistulemused</h1>
+            <MeasurementsTable />
         </div>
     </div>
 </template>
 
 <script>
 import AppHeader from '../components/AppHeader'
-import LabList from '../components/LabList'
+import MeasurementsTable from '../components/MeasurementsTable'
 
 export default {
     components: {
         AppHeader,
-        LabList
+        MeasurementsTable
     }
 }
 </script>
 
 <style>
-
 </style>
