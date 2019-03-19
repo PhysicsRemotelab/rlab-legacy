@@ -23,9 +23,6 @@
 
 <script>
 export default {
-    components: {
-        
-    },
     computed: {
         measurements() {
             return this.$store.getters.getMeasurements

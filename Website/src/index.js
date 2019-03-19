@@ -5,11 +5,11 @@ import store from './store'
 
 Vue.config.productionTip = false
 
-const app = new Vue({
+const vm = new Vue({
   router,
   store,
   el: '#app',
   render: h => h(App)
 })
 
-export default app
+export default vm

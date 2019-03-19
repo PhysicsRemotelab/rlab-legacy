@@ -14,6 +14,20 @@ import AppHeader from '../components/AppHeader'
 export default {
     components: {
         AppHeader
+    },
+    data: function() {
+        return {
+            
+        }
+    },
+    computed: {
+
+    },
+    watch: {
+
+    },
+    methods: {
+
     }
 }
 </script>

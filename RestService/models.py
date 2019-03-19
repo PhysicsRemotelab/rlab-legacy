@@ -20,6 +20,7 @@ class Lab(BaseModel):
     name = CharField(max_length=1000)
     description = CharField(max_length=1000)
     taken = BooleanField(default=False)
+    seo = CharField(max_length=1000)
     created = DateField(default=datetime.datetime.now)
     updated = DateField(default=datetime.datetime.now)
 
