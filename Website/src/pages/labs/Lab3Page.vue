@@ -2,7 +2,7 @@
     <div>
         <AppHeader />
         <div class="jumbotron">
-            <h1 class="display-4">Labor 2</h1>
+            <h1 class="display-4">Labor {{ $route.params.id }}</h1>
             <p class="lead">Mõõtmine siin</p>
         </div>
     </div>

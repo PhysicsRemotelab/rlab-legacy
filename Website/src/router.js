@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import LandingPage from './pages/LandingPage'
+import PageNotFound from './pages/PageNotFound'
+
 import MeasurementsPage from './pages/MeasurementsPage'
 import LabsPage from './pages/LabsPage'
-import PageNotFound from './pages/PageNotFound'
 import Lab1Page from './pages/labs/Lab1Page'
 import Lab2Page from './pages/labs/Lab2Page'
 import Lab3Page from './pages/labs/Lab3Page'
@@ -17,39 +18,39 @@ const routes = [
     name: 'landing-page',
     component: LandingPage 
   },
-  { 
-    path: '/labs', 
-    name: 'labs-page',
-    component: LabsPage 
-  },
   {
     path: '/measurements', 
     name: 'measurements-page',
     component: MeasurementsPage 
   },
+  { 
+    path: '/labs', 
+    name: 'labs-page',
+    component: LabsPage
+  },
   {
-    path: '/labs/:id',
-    name: 'lab1-page',
+    path: '/lab1',
+    name: 'lab-page-1',
     component: Lab1Page,
-    params: true
+    props: { id: 1 }
   },
   {
-    path: '/labs/:id',
-    name: 'lab2-page',
+    path: '/lab2',
+    name: 'lab-page-2',
     component: Lab2Page,
-    params: true
+    props: { id: 2 }
   },
   {
-    path: '/labs/:id',
-    name: 'lab3-page',
+    path: '/lab3',
+    name: 'lab-page-3',
     component: Lab3Page,
-    params: true
+    props: { id: 3 }
   },
   {
-    path: '/labs/:id',
-    name: 'lab4-page',
+    path: '/lab4',
+    name: 'lab-page-4',
     component: Lab4Page,
-    params: true
+    props: { id: 4 }
   },
   { 
     path: '*', 

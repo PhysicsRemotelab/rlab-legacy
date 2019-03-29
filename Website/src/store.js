@@ -8,7 +8,8 @@ const store = new Vuex.Store({
     strict: true,
     state: {
         labs: [],
-        measurements: []
+        measurements: [],
+        lab: []
     },
     getters: {
         getLabs(state, getters) {
@@ -16,6 +17,9 @@ const store = new Vuex.Store({
         },
         getMeasurements(state, getters) {
             return state.measurements
+        },
+        getLab(state, getters) {
+            return state.lab
         }
     },
     actions: {
@@ -36,6 +40,15 @@ const store = new Vuex.Store({
             .catch(error => {
                 console.log('Error:', error.response)
             })
+        },
+        fetchLab(context, data) {
+            RestService.getLabAPI(data.id)
+            .then(res => {
+                context.commit('setLab', res.data)
+            })
+            .catch(error => {
+                console.log('Error:', error.response)
+            })
         }
     },
     mutations: {
@@ -44,6 +57,9 @@ const store = new Vuex.Store({
         },
         setMeasurements(state, data) {
             state.measurements = data
+        },
+        setLab(state, data) {
+            state.lab = data
         }
     }
 })
