@@ -87,6 +87,7 @@ def create_measurement_route():
     lab_id = request.json['lab_id']
     user_id = request.json['user_id']
     results = request.json['results']
+    
     measurement = create_measurement(lab_id, user_id, results)
     resp = measurement.save()
     return jsonify(resp)

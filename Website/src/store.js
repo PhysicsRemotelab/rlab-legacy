@@ -63,6 +63,16 @@ const store = new Vuex.Store({
         },
         updateLabAvailable(context, data) {
             context.commit('setLabAvailable', data)
+        },
+        deleteMeasurement(context, data) {
+            context.commit('setDeleteMeasurement', data)
+            RestService.deleteMeasurementAPI(data)
+                .then(res => {
+                    console.log('Delete success: ', res)
+                })
+                .catch(error => {
+                    console.log('Error:', error.response)
+                })
         }
     },
     mutations: {
@@ -84,6 +94,10 @@ const store = new Vuex.Store({
             state.lab_taken = data
             state.lab_taken.taken = false
             this.dispatch('updateLab', state.lab_taken)
+        },
+        setDeleteMeasurement(state, data) {
+            var arrayId = state.measurements.findIndex(x => x.id === data)
+            state.measurements.splice(arrayId, 1)
         }
     }
 })

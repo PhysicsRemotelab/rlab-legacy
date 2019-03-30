@@ -49,7 +49,7 @@
                                 </tbody>
                             </table>
                             <div class="col-sm-10">
-                                <button type="submit" class="btn btn-outline-success" :disabled='saveButtonDisabled' @click='save'>Salvesta andmebaasi</button>
+                                <button type="submit" class="btn btn-outline-success" :disabled='saveButtonDisabled' @click='save'>{{ saveButtonName }}</button>
                             </div>
                         </div>
                     </div>
@@ -64,13 +64,13 @@ import AppHeader from '../../components/AppHeader'
 import RestService from '../../services/RestService'
 import CameraCard from '../../components/CameraCard'
 import io from 'socket.io-client'
-import axios from 'axios'
 
 var data = {
     measurementsCount: 3,
     measurements: [],
     beginButtonDisabled: false,
-    saveButtonDisabled: true
+    saveButtonDisabled: true,
+    saveButtonName: 'Salvesta andmebaasi'
 }
 
 export default {
@@ -127,19 +127,22 @@ export default {
                 console.log('finished')
                 data.beginButtonDisabled = false
                 data.saveButtonDisabled = false
+                data.saveButtonName = 'Salvesta andmebaasi'
             })
         },
         save: function() {
-            console.log('save')
             const formData = {
                 lab_id: this.lab.id,
                 user_id: 1,
                 results: data.measurements
             }
-            axios.post('http://127.0.0.1:5000/measurements/', formData)
-                .then(res => console.log(res))
+            RestService.postMeasurementsAPI(formData)
+                .then(res => {
+                    console.log(res)
+                    data.saveButtonDisabled = true
+                    data.saveButtonName = 'Salvestatud'
+                })
                 .catch(error => console.log(error))
-            data.saveButtonDisabled = true
         }
     }
 }

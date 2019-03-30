@@ -21,5 +21,11 @@ export default {
     },
     updateLabAPI(data) {
         return apiClient.put('/labs/', data)
+    },
+    postMeasurementsAPI(data) {
+        return apiClient.post('/measurements/', data)
+    },
+    deleteMeasurementAPI(id) {
+        return apiClient.delete('/measurements/' + id)
     }
 }
