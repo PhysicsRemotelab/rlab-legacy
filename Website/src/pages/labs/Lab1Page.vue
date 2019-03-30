@@ -3,7 +3,58 @@
         <AppHeader />
         <div class="jumbotron">
             <h1 class="display-4">Labor {{ id }} - {{ lab.name }}</h1>
-            <p class="lead">Mõõtmine siin</p>
+            <hr class="my-4">
+            <div class="row">
+                <div class="col-sm-4 p-2">
+                    <CameraCard url='http://localhost:4000/video_feed' />
+                </div>
+                <div class="col-sm-4 p-2">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Algandmed</h5>
+                            <div class="form-group">
+                                <label for="measurementsCount">Mõõtmiste arv</label>
+                                <select id="measurementsCount" v-model='measurementsCount' class="form-control">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                </select>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-10">
+                                    <button type="submit" class="btn btn-outline-success" :disabled='beginButtonDisabled' @click='begin'>Alusta</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4 p-2">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Tulemused</h5>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Nr</th>
+                                        <th scope="col">Tulemus</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for='m in measurements' :key='m.id'>
+                                        <th scope="row">{{ m.id }}</th>
+                                        <td>{{ m.dist }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="col-sm-10">
+                                <button type="submit" class="btn btn-outline-success" :disabled='saveButtonDisabled' @click='save'>Salvesta andmebaasi</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -11,10 +62,21 @@
 <script>
 import AppHeader from '../../components/AppHeader'
 import RestService from '../../services/RestService'
+import CameraCard from '../../components/CameraCard'
+import io from 'socket.io-client'
+import axios from 'axios'
+
+var data = {
+    measurementsCount: 3,
+    measurements: [],
+    beginButtonDisabled: false,
+    saveButtonDisabled: true
+}
 
 export default {
     components: {
-        AppHeader
+        AppHeader,
+        CameraCard
     },
     props: {
         id: {
@@ -27,9 +89,7 @@ export default {
         }
     },
     data() {
-        return {
-            
-        }
+        return data
     },
     computed: {
         lab() {
@@ -50,6 +110,36 @@ export default {
             } else {
                 next(false)
             }
+        }
+    },
+    methods: {
+        begin: function() {
+            const socket = io('http://localhost:4500')
+            console.log(this.measurementsCount)
+            socket.emit('start_measurement', JSON.stringify({count:this.measurementsCount}))
+            data.measurements = []
+            data.beginButtonDisabled = true
+            socket.on('sensor', function (data2, msg) {
+                data.measurements.push(data2)
+                console.log(data)
+            })
+            socket.on('finished', function (data2, msg) {
+                console.log('finished')
+                data.beginButtonDisabled = false
+                data.saveButtonDisabled = false
+            })
+        },
+        save: function() {
+            console.log('save')
+            const formData = {
+                lab_id: this.lab.id,
+                user_id: 1,
+                results: data.measurements
+            }
+            axios.post('http://127.0.0.1:5000/measurements/', formData)
+                .then(res => console.log(res))
+                .catch(error => console.log(error))
+            data.saveButtonDisabled = true
         }
     }
 }

@@ -18,6 +18,13 @@ module.exports = {
       "vue/singleline-html-element-content-newline": "off",
       "vue/html-self-closing": "off",
       "space-before-function-paren": ["warn", "never"],
-      "vue/max-attributes-per-line": "off"
+      "vue/max-attributes-per-line": "off",
+      "no-multiple-empty-lines": "off",
+      "padded-blocks": "off",
+      "object-curly-spacing": "off",
+      "key-spacing": "off",
+      "space-before-function-paren": "off",
+      "comma-spacing": "off",
+      "semi": "off"
     }
 }
