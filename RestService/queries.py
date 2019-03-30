@@ -56,7 +56,10 @@ def update_lab(id, name, description, taken):
     lab.description = description
     lab.taken = taken
     result = lab.save()
-    return result
+    if result == 1:
+        return model_to_dict(lab)
+    else:
+        return 'Update unsuccessful'
 
 def delete_lab(id):
     lab = Lab.get(Lab.id == id)

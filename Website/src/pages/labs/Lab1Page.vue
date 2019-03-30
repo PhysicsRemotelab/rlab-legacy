@@ -41,9 +41,11 @@ export default {
     },
     beforeRouteLeave(to, from, next) {
         if (this.confirmed) {
+            this.$store.dispatch('updateLabAvailable', this.lab)
             next()
         } else {
             if (confirm('Soovid katkestada?')) {
+                this.$store.dispatch('updateLabAvailable', this.lab)
                 next()
             } else {
                 next(false)

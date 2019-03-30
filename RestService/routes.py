@@ -63,6 +63,7 @@ def update_lab_route():
     description = request.json['description']
     taken = request.json['taken']
     resp = update_lab(id, name, description, taken)
+    print(resp)
     return jsonify(resp)
 
 @app_.route('/labs/<int:index>', methods=['DELETE'])

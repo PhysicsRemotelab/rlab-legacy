@@ -18,5 +18,8 @@ export default {
     },
     getMeasurementsAPI() {
         return apiClient.get('/measurements/')
+    },
+    updateLabAPI(data) {
+        return apiClient.put('/labs/', data)
     }
 }

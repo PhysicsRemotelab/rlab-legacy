@@ -1,4 +1,5 @@
-Restservice/__pycache__
+RestService/__pycache__
+CamService/__pycache__
 venv
 .vscode
 node_modules
