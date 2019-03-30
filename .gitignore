@@ -1,5 +1,6 @@
 RestService/__pycache__
 CamService/__pycache__
+SensorService/__pycache__
 venv
 .vscode
 node_modules

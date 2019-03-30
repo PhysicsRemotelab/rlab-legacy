@@ -5,7 +5,7 @@ Running Python projects:
 ```.\venv\Scripts\Activate.ps1```
 3. Install dependencies: 
 ```pip install -r requirements.txt```
-4. Start REST service (requires active PostgeSQL database): 
+4. Start Rest service (requires PostgeSQL): 
 ```python .\RestService\app.py```
 5. Start Camera service: 
 ```python .\CamService\app.py```
