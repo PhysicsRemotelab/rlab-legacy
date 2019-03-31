@@ -4,7 +4,8 @@
         <div class="jumbotron">
             <h1 class="display-4">Labor {{ id }} - {{ lab.name }}</h1>
             <hr class="my-4">
-            <div class="row">
+            <div v-if='lab.taken'>Hõivatud</div>
+            <div v-else class="row">
                 <div class="col-sm-4 p-2">
                     <CameraCard url='http://localhost:4000/video_feed' />
                 </div>
@@ -70,7 +71,8 @@ var data = {
     measurements: [],
     beginButtonDisabled: false,
     saveButtonDisabled: true,
-    saveButtonName: 'Salvesta andmebaasi'
+    saveButtonName: 'Salvesta andmebaasi',
+    labTaken: true
 }
 
 export default {
@@ -98,30 +100,58 @@ export default {
     },
     created() {
         this.$store.dispatch('fetchLab', { id: this.id })
+        var vm = this
+        if (!this.lab.taken) {
+            setTimeout(function() {
+                var updatedLab = {
+                    created: vm.lab.created,
+                    description: vm.lab.description,
+                    id: vm.lab.id,
+                    name: vm.lab.name,
+                    seo: vm.lab.seo,
+                    taken: true,
+                    updated: vm.lab.updated
+                }
+                vm.$store.dispatch('updateLab', updatedLab)
+            }, 1000)
+        }
     },
     beforeRouteLeave(to, from, next) {
-        if (this.confirmed) {
-            this.$store.dispatch('updateLabAvailable', this.lab)
-            next()
-        } else {
-            if (confirm('Soovid katkestada?')) {
-                this.$store.dispatch('updateLabAvailable', this.lab)
+        var vm = this
+        var updatedLab = {
+            created: vm.lab.created,
+            description: vm.lab.description,
+            id: vm.lab.id,
+            name: vm.lab.name,
+            seo: vm.lab.seo,
+            taken: false,
+            updated: vm.lab.updated
+        }
+        if (!vm.lab.taken) {
+            if (this.confirmed) {
+                this.$store.dispatch('updateLab', updatedLab)
                 next()
             } else {
-                next(false)
+                if (confirm('Soovid katkestada?')) {
+                    this.$store.dispatch('updateLab', updatedLab)
+                    next()
+                } else {
+                    next(false)
+                }
             }
+        } else {
+            next()
         }
     },
     methods: {
         begin: function() {
             const socket = io('http://localhost:4500')
-            console.log(this.measurementsCount)
-            socket.emit('start_measurement', JSON.stringify({count:this.measurementsCount}))
+            socket.emit('start_measurement', JSON.stringify({ count: this.measurementsCount }))
             data.measurements = []
             data.beginButtonDisabled = true
             socket.on('sensor', function (data2, msg) {
                 data.measurements.push(data2)
-                console.log(data)
+                console.log(data2)
             })
             socket.on('finished', function (data2, msg) {
                 console.log('finished')

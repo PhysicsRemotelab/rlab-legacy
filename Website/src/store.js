@@ -9,8 +9,7 @@ const store = new Vuex.Store({
     state: {
         labs: [],
         measurements: [],
-        lab: [],
-        lab_taken: []
+        lab: []
     },
     getters: {
         getLabs(state, getters) {
@@ -46,7 +45,6 @@ const store = new Vuex.Store({
             RestService.getLabAPI(data.id)
                 .then(res => {
                     context.commit('setLab', res.data)
-                    context.commit('setLabTaken', res.data)
                 })
                 .catch(error => {
                     console.log('Error:', error.response)
@@ -55,14 +53,11 @@ const store = new Vuex.Store({
         updateLab(context, data) {
             RestService.updateLabAPI(data)
                 .then(res => {
-                    // console.log('Update success: ', res)
+                    console.log('Update success: ', res)
                 })
                 .catch(error => {
                     console.log('Error:', error.response)
                 })
-        },
-        updateLabAvailable(context, data) {
-            context.commit('setLabAvailable', data)
         },
         deleteMeasurement(context, data) {
             context.commit('setDeleteMeasurement', data)
@@ -84,16 +79,6 @@ const store = new Vuex.Store({
         },
         setLab(state, data) {
             state.lab = data
-        },
-        setLabTaken(state, data) {
-            state.lab_taken = data
-            state.lab_taken.taken = true
-            this.dispatch('updateLab', state.lab_taken)
-        },
-        setLabAvailable(state, data) {
-            state.lab_taken = data
-            state.lab_taken.taken = false
-            this.dispatch('updateLab', state.lab_taken)
         },
         setDeleteMeasurement(state, data) {
             var arrayId = state.measurements.findIndex(x => x.id === data)

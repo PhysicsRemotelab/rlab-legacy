@@ -1,5 +1,5 @@
 <template>
-    <div class="col-sm-6 p-1">
+    <div class="col-sm-4 p-1">
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">{{ lab.name }}</h5>
