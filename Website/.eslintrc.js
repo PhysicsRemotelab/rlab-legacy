@@ -25,6 +25,7 @@ module.exports = {
       "key-spacing": "off",
       "space-before-function-paren": "off",
       "comma-spacing": "off",
-      "semi": "off"
+      "semi": "off",
+      "spaced-comment": "off"
     }
 }
