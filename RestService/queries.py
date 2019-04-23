@@ -1,4 +1,4 @@
-from datetime import date
+import datetime
 from models import User, Lab, Measurement
 from playhouse.shortcuts import model_to_dict, dict_to_model
 
@@ -37,7 +37,14 @@ def get_labs():
     query = Lab.select()
     labs = []
     for lab in query:
-        labs.append(model_to_dict(lab))
+        # Update taken status if access_token has expired
+        if lab.updated < datetime.datetime.now() - datetime.timedelta(seconds=60):
+            lab.taken = False
+            lab.access_token = ''
+            lab.save()
+            labs.append(model_to_dict(lab))
+        else:
+            labs.append(model_to_dict(lab))
     return labs
 
 def get_lab(id):
@@ -45,16 +52,17 @@ def get_lab(id):
     result = model_to_dict(query)
     return result
 
-def create_lab(name, description):
-    lab = Lab(name=name, description=description)
+def create_lab(name):
+    lab = Lab(name=name)
     lab.save()
     return lab
 
-def update_lab(id, name, description, taken):
+def update_lab(id, name, description, taken, access_token):
     lab = Lab.get(Lab.id == id)
     lab.name = name
     lab.description = description
     lab.taken = taken
+    lab.access_token = access_token
     result = lab.save()
     if result == 1:
         return model_to_dict(lab)

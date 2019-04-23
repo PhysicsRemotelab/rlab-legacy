@@ -27,5 +27,8 @@ export default {
     },
     deleteMeasurementAPI(id) {
         return apiClient.delete('/measurements/' + id)
+    },
+    accessToken(data) {
+        return apiClient.post('/check_token/', data)
     }
 }

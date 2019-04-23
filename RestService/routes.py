@@ -2,6 +2,9 @@ import json
 from datetime import date
 from flask import jsonify, Blueprint, request
 from queries import *
+from models import Lab
+from playhouse.shortcuts import model_to_dict, dict_to_model
+from peewee import DateTimeField
 
 app_ = Blueprint('app_', __name__)
 
@@ -51,8 +54,7 @@ def get_lab_route(index):
 @app_.route('/labs/', methods=['POST'])
 def create_lab_route():
     name = request.json['name']
-    description = request.json['description']
-    lab = create_lab(name, description)
+    lab = create_lab(name)
     resp = lab.save()
     return jsonify(resp)
 
@@ -62,7 +64,8 @@ def update_lab_route():
     name = request.json['name']
     description = request.json['description']
     taken = request.json['taken']
-    resp = update_lab(id, name, description, taken)
+    access_token = request.json['access_token']
+    resp = update_lab(id, name, description, taken, access_token)
     print(resp)
     return jsonify(resp)
 
@@ -103,3 +106,29 @@ def update_measurement_route():
 def delete_measurement_route(index):
     result = delete_measurement(index)
     return jsonify(result)
+
+@app_.route('/check_token/', methods=['POST'])
+def check_token_route():
+    id = request.json['id']
+    access_token = request.json['access_token']
+    lab = Lab.get(Lab.id == id)
+
+    if(lab.taken == True):
+        if(lab.access_token == access_token):
+            if lab.updated > datetime.datetime.now() - datetime.timedelta(seconds=60):
+                return jsonify({ 'result': '1', 'note': 'Lab was taken, access token valid' })
+            else:
+                lab.taken = False
+                lab.access_token = ''
+                lab.save()
+                return jsonify({ 'result': '0', 'note': 'Lab was taken, access token not valid' })
+        else:
+            return jsonify({ 'result': '0', 'note': 'Lab was taken, access token not valid' })
+    else:
+        lab.taken = True
+        lab.access_token = access_token
+        lab.updated = datetime.datetime.now()
+        lab.save()
+        return jsonify({ 'result': '1', 'note': 'Lab was not taken, access token activated' })
+
+    return jsonify({ 'result': '-1', 'note': 'Limbo' })

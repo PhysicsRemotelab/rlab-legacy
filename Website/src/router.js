@@ -8,7 +8,6 @@ import LabsPage from './pages/LabsPage'
 import Lab1Page from './pages/labs/Lab1Page'
 import Lab2Page from './pages/labs/Lab2Page'
 import Lab3Page from './pages/labs/Lab3Page'
-import Lab4Page from './pages/labs/Lab4Page'
 
 Vue.use(VueRouter)
 
@@ -44,13 +43,7 @@ const routes = [
     path: '/lab3',
     name: 'lab-page-3',
     component: Lab3Page,
-    props: { id: 3 }
-  },
-  {
-    path: '/lab4',
-    name: 'lab-page-4',
-    component: Lab4Page,
-    props: { id: 4 }
+    props: (route) => ({ id: 3, accessToken: route.query.access })
   },
   { 
     path: '*', 
