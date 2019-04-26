@@ -1,4 +1,4 @@
-import os, glob, serial
+import serial
 import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.animation as animation
@@ -25,3 +25,4 @@ def animate(i, x, y):
 
 ani = animation.FuncAnimation(fig, animate, fargs=(x, y), interval=100)
 plt.show()
+
