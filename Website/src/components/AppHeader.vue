@@ -5,7 +5,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div id="navbarTogglerDemo01" class="collapse navbar-collapse">
-            <router-link to="/" class="navbar-brand">Kaugjuhtivuslabor</router-link>
+            <router-link to="/" class="navbar-brand">Kaugjuhtimislabor</router-link>
             <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                 <li class="nav-item">
                     <router-link to="/labs" class="nav-link">Laborid</router-link>

@@ -79,22 +79,27 @@ y_in = np.zeros((1, 201))
 print('Started')
 def animate(i, x, y):
     try:
-        ax.clear()
-        # Draw spectral lines
-        for i in range(len(wavelengths_calibration)):
-            rgb = wavelength_to_rgb(wavelengths_calibration[i], gamma=0.8)
-            ax.axvline(x=wavelengths_calibration[i], linewidth=2, color=np.array(rgb)/max(rgb))
-
-        ax.set_ylim(0, 1050)
         data = ser.readline()
-        data = data.split(b',')
-        data = data[1:201]
-        y_in = [int(p) for p in data]
-        intensities = y_in / percent * 100
-        ax.plot(wavelengths, intensities)
+        ser.flushInput()
+
+        data2 = data.split(b',')
+        data3 = data2[1:201]
+        if len(data3) ==  200:
+            ax.clear()
+            
+            # Draw spectral lines
+            for i in range(len(wavelengths_calibration)):
+                rgb = wavelength_to_rgb(wavelengths_calibration[i], gamma=0.8)
+                ax.axvline(x=wavelengths_calibration[i], linewidth=2, color=np.array(rgb)/max(rgb))
+            
+            ax.set_ylim(0, 3000)
+            ax.set_xlim(300, 800)
+            y_in = [int(p) for p in data3]
+            intensities = y_in / percent * 100
+            ax.plot(wavelengths, intensities)
     except Exception as e:
         print(e)
 
 # 5. Animate data
-ani = animation.FuncAnimation(fig, animate, fargs=(x_in, y_in), interval=200)
+ani = animation.FuncAnimation(fig, animate, fargs=(x_in, y_in), interval=500)
 plt.show()

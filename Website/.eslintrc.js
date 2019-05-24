@@ -28,6 +28,8 @@ module.exports = {
       "semi": "off",
       "spaced-comment": "off",
       "keyword-spacing": "off",
-      "curly": "off"
+      "curly": "off",
+      "no-multi-spaces": "off",
+      "standard/object-curly-even-spacing": "off"
     }
 }

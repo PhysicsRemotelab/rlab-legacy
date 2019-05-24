@@ -67,7 +67,13 @@ for i in range(len(wavelengths)):
     rgb = wavelength_to_rgb(wavelengths[i], gamma=0.8)
     plt.axvline(x=wavelengths[i], linewidth=2, color=np.array(rgb)/max(rgb))
 
+incoming_intensity = y
+test_wavelength = x
+percent = f(test_wavelength)
+real_intensity = incoming_intensity / percent * 100
 
+plt.plot(test_wavelength, incoming_intensity, 'go', markersize=5)
+plt.plot(test_wavelength, real_intensity, 'go', markersize=5)
 plt.plot(x2, y2)
 plt.grid()
 plt.show()

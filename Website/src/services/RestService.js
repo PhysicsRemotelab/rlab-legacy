@@ -30,5 +30,8 @@ export default {
     },
     accessToken(data) {
         return apiClient.post('/check_token/', data)
+    },
+    freeLab(data) {
+        return apiClient.post('/free_lab/', data)
     }
 }

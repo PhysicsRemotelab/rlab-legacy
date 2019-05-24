@@ -2,59 +2,22 @@
     <div>
         <AppHeader />
         <div class="jumbotron">
-            <h1 class="display-4">Labor {{ id }} - {{ lab.name }}</h1>
-            <hr class="my-4">
-            <div v-if='lab.taken'>Hõivatud</div>
-            <div v-else class="row">
-                <div class="col-sm-4 p-2">
-                    <CameraCard url='http://localhost:4000/video_feed' />
-                </div>
-                <div class="col-sm-4 p-2">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Algandmed</h5>
-                            <div class="form-group">
-                                <label for="measurementsCount">Mõõtmiste arv</label>
-                                <select id="measurementsCount" v-model='measurementsCount' class="form-control">
-                                    <option>1</option>
-                                    <option>2</option>
-                                    <option>3</option>
-                                    <option>4</option>
-                                    <option>5</option>
-                                </select>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-sm-10">
-                                    <button type="submit" class="btn btn-outline-success" :disabled='beginButtonDisabled' @click='begin'>Alusta</button>
-                                </div>
-                            </div>
-                        </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-11">
+                        <h1 class="display-4">Labor {{ id }} {{ lab.name }}</h1>
+                    </div>
+                    <div class="col-sm-1">
+                        <button class="btn btn-raised btn-danger" @click='markFree'>Lõpeta</button>
                     </div>
                 </div>
-                <div class="col-sm-4 p-2">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Tulemused</h5>
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Nr</th>
-                                        <th scope="col">Tulemus</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for='m in measurements' :key='m.id'>
-                                        <th scope="row">{{ m.id }}</th>
-                                        <td>{{ m.dist }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="col-sm-10">
-                                <button type="submit" class="btn btn-outline-success" :disabled='saveButtonDisabled' @click='save'>{{ saveButtonName }}</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            </div>
+            <div class="container">
+                <countdown :time="time" :interval="100" tag="p">
+                    <template v-if='time != 0' slot-scope="props">Lõpetamiseni jäänud：{{ props.hours }} h {{ props.minutes }} m {{ props.seconds }}.{{ Math.floor(props.milliseconds / 100) }} s.</template>
+                </countdown>
+                <div v-if='!accessTokenValid'>Labor hõivatud</div>
+                <p v-else class="lead">Mõõtmine siin</p>
             </div>
         </div>
     </div>
@@ -63,116 +26,57 @@
 <script>
 import AppHeader from '../../components/AppHeader'
 import RestService from '../../services/RestService'
-import CameraCard from '../../components/CameraCard'
 import io from 'socket.io-client'
-
-var data = {
-    measurementsCount: 3,
-    measurements: [],
-    beginButtonDisabled: false,
-    saveButtonDisabled: true,
-    saveButtonName: 'Salvesta andmebaasi',
-    labTaken: true
-}
+import { getRemainingTime } from '../../helpers/helpers'
+import VueCountdown from '@chenfengyuan/vue-countdown'
 
 export default {
     components: {
         AppHeader,
-        CameraCard
+        'countdown': VueCountdown
     },
     props: {
         id: {
             type: Number,
             required: true
-        },
-        confirmed: {
-            type: Boolean,
-            default: false
         }
     },
     data() {
-        return data
-    },
-    computed: {
-        lab() {
-            return this.$store.getters.getLab
+        return {
+            accessTokenValid: false,
+            lab: {},
+            time: 0
         }
     },
     created() {
-        this.$store.dispatch('fetchLab', { id: this.id })
-        var vm = this
-        if (!this.lab.taken) {
-            setTimeout(function() {
-                var updatedLab = {
-                    created: vm.lab.created,
-                    description: vm.lab.description,
-                    id: vm.lab.id,
-                    name: vm.lab.name,
-                    seo: vm.lab.seo,
-                    taken: true,
-                    updated: vm.lab.updated
+        const accessToken = window.localStorage.getItem('access_token')
+        var apidata = { 'id': this.$props.id, 'access_token': accessToken }
+        RestService.accessToken(apidata)
+            .then(response => {
+                console.log(response.data)
+                if(response.data.result === '1') {
+                    this.accessTokenValid = true
                 }
-                vm.$store.dispatch('updateLab', updatedLab)
-            }, 1000)
-        }
-    },
-    beforeRouteLeave(to, from, next) {
-        var vm = this
-        var updatedLab = {
-            created: vm.lab.created,
-            description: vm.lab.description,
-            id: vm.lab.id,
-            name: vm.lab.name,
-            seo: vm.lab.seo,
-            taken: false,
-            updated: vm.lab.updated
-        }
-        if (!vm.lab.taken) {
-            if (this.confirmed) {
-                this.$store.dispatch('updateLab', updatedLab)
-                next()
-            } else {
-                if (confirm('Soovid katkestada?')) {
-                    this.$store.dispatch('updateLab', updatedLab)
-                    next()
-                } else {
-                    next(false)
-                }
-            }
-        } else {
-            next()
-        }
+                this.lab = response.data.lab
+                var time = getRemainingTime(this.lab.updated)
+                this.time = time
+            })
+            .catch(error => {
+                console.log('Error:', error.response)
+            })
     },
     methods: {
-        begin: function() {
-            const socket = io('http://localhost:4500')
-            socket.emit('start_measurement', JSON.stringify({ count: this.measurementsCount }))
-            data.measurements = []
-            data.beginButtonDisabled = true
-            socket.on('sensor', function (data2, msg) {
-                data.measurements.push(data2)
-                console.log(data2)
+        markFree: function() {
+            const accessToken = window.localStorage.getItem('access_token')
+            var apidata = { 'id': this.$props.id, 'access_token': accessToken }
+            RestService.freeLab(apidata)
+            .then(response => {
+                console.log(response.data)
+                this.$router.push('labs')
             })
-            socket.on('finished', function (data2, msg) {
-                console.log('finished')
-                data.beginButtonDisabled = false
-                data.saveButtonDisabled = false
-                data.saveButtonName = 'Salvesta andmebaasi'
+            .catch(error => {
+                console.log('Error:', error.response)
             })
-        },
-        save: function() {
-            const formData = {
-                lab_id: this.lab.id,
-                user_id: 1,
-                results: data.measurements
-            }
-            RestService.postMeasurementsAPI(formData)
-                .then(res => {
-                    console.log(res)
-                    data.saveButtonDisabled = true
-                    data.saveButtonName = 'Salvestatud'
-                })
-                .catch(error => console.log(error))
         }
     }
 }

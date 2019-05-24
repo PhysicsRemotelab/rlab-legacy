@@ -31,19 +31,19 @@ const routes = [
     path: '/lab1',
     name: 'lab-page-1',
     component: Lab1Page,
-    props: { id: 1 }
+    props: (route) => ({ id: 1 })
   },
   {
     path: '/lab2',
     name: 'lab-page-2',
     component: Lab2Page,
-    props: { id: 2 }
+    props: (route) => ({ id: 2 })
   },
   {
     path: '/lab3',
     name: 'lab-page-3',
     component: Lab3Page,
-    props: (route) => ({ id: 3, accessToken: route.query.access })
+    props: (route) => ({ id: 3 })
   },
   { 
     path: '*', 

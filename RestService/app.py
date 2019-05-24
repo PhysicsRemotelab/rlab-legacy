@@ -3,6 +3,8 @@ from routes import app_
 from flask_cors import CORS
 from playhouse.postgres_ext import PostgresqlExtDatabase
 from models import database_proxy, create_tables
+import os, time
+
 
 database = PostgresqlExtDatabase('remotelab', user='postgres', password='postgres', host='localhost')
 database_proxy.initialize(database)

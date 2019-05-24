@@ -66,7 +66,6 @@ def update_lab_route():
     taken = request.json['taken']
     access_token = request.json['access_token']
     resp = update_lab(id, name, description, taken, access_token)
-    print(resp)
     return jsonify(resp)
 
 @app_.route('/labs/<int:index>', methods=['DELETE'])
@@ -116,19 +115,37 @@ def check_token_route():
     if(lab.taken == True):
         if(lab.access_token == access_token):
             if lab.updated > datetime.datetime.now() - datetime.timedelta(seconds=60):
-                return jsonify({ 'result': '1', 'note': 'Lab was taken, access token valid' })
+                return jsonify({ 'result': '1', 'note': 'Lab was taken, access token valid', 'lab': model_to_dict(lab) })
             else:
                 lab.taken = False
                 lab.access_token = ''
                 lab.save()
-                return jsonify({ 'result': '0', 'note': 'Lab was taken, access token not valid' })
+                return jsonify({ 'result': '0', 'note': 'Lab was taken, access token not valid', 'lab': model_to_dict(lab) })
         else:
-            return jsonify({ 'result': '0', 'note': 'Lab was taken, access token not valid' })
+            return jsonify({ 'result': '0', 'note': 'Lab was taken, access token not valid', 'lab': model_to_dict(lab) })
     else:
         lab.taken = True
         lab.access_token = access_token
         lab.updated = datetime.datetime.now()
+        print(datetime.datetime.now())
         lab.save()
-        return jsonify({ 'result': '1', 'note': 'Lab was not taken, access token activated' })
+        return jsonify({ 'result': '1', 'note': 'Lab was not taken, access token activated', 'lab': model_to_dict(lab) })
 
-    return jsonify({ 'result': '-1', 'note': 'Limbo' })
+    return jsonify({ 'result': '-1', 'note': 'Limbo, you should not be here' })
+
+@app_.route('/free_lab/', methods=['POST'])
+def free_lab_route():
+    id = request.json['id']
+    access_token = request.json['access_token']
+    lab = Lab.get(Lab.id == id)
+
+    if(lab.access_token == access_token):
+        lab.taken = False
+        lab.access_token = ''
+        lab.updated = datetime.datetime.now() - datetime.timedelta(seconds=100) 
+        lab.save()
+        return jsonify({ 'result': '1', 'note': 'Lab was set free' })
+    else:
+        return jsonify({ 'result': '0', 'note': 'Lab was not set free' })
+
+    return jsonify({ 'result': '-1', 'note': 'Limbo, you should not be here' })
