@@ -1,8 +1,9 @@
+import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-from scipy import stats, interpolate
+from scipy import interpolate
 import serial
-import numpy as np
+import time
 
 def wavelength_to_rgb(wavelength, gamma=0.8):
     '''This converts a given wavelength of light to an 
@@ -49,18 +50,30 @@ def wavelength_to_rgb(wavelength, gamma=0.8):
     B *= 255
     return (int(R), int(G), int(B))
 
-# 1. Create model to convert pixels into wavelengths
-pixels = [21, 37, 40, 50, 70, 72, 95, 110, 146]
-wavelengths_calibration = [365, 405, 410, 434, 486, 500, 546, 579, 656]
-slope, intercept, r_value, p_value, std_err = stats.linregress(pixels, wavelengths_calibration)
+# 1. Convert pixels into wavelengths
+x = (2.35 * np.linspace(10, 250, 240) + 319.16) * 10e-10
 
-# 2. Create model to calculate real intensity
-wavelengths_intensity = 305 + np.array([14,38,47,59,70,84,95,100,106,115,121,131,140,148,161,174,182,189,195,210,230,238,247,255,266,275,282,300,317,348,374,400,431,469,518,562])
-intensities = 565 - np.array([355,263,225,170,112,56,26,20,16,20,26,34,41,35,17,4,0,3,10,55,110,124,132,128,121,118,122,143,169,225,282,338,393,450,504,525])
-intensities_scaled = intensities / intensities.max(axis=0) * 100
-f = interpolate.interp1d(wavelengths_intensity, intensities_scaled, kind='cubic')
+# 2. Create model to describe uncalibrated line
+wavelength = np.round(np.genfromtxt('Helpers/xval.txt', delimiter='\n'))
+wavelength = wavelength * 10e-10
+intensity = np.genfromtxt('Helpers/yval.txt', delimiter=',')
+uncalibrated_line = interpolate.interp1d(wavelength, intensity, kind='cubic')
 
-# 3. Setup serial port and figure plot
+# 3. Create model to describe black body line 
+h = 6.626e-34
+c = 3.0e+8
+k = 1.38e-23
+T = 1700 + 273
+blackbody_line = 2.0*h*c**2 / ((x**5) * (np.exp(h*c/(x*k*T)) - 1.0)) * 10e-9
+
+# 4. Calculate coefficients and function
+uncalibrated_y = uncalibrated_line(x)
+coef = blackbody_line / uncalibrated_y
+#coef_norm = coef / max(coef) * 100
+coef_func = interpolate.interp1d(x, coef, kind='cubic')
+
+
+# 5. Setup serial port
 try:
     ser = serial.Serial('COM3', baudrate=115200, timeout=1)
 except Exception as e:
@@ -69,37 +82,47 @@ except Exception as e:
 fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1)
 
-# 4. Calculate wavelengths and real intensities
-x_in = np.linspace(1, 201, 200)
-wavelengths = slope * x_in + intercept
-percent = f(wavelengths)
+# 6. Calculate wavelengths and real intensities
+wavelengths = (2.35 * np.linspace(10, 250, 240) + 319.16) * 10e-10
+percent = coef_func(wavelengths)
 y_in = np.zeros((1, 201))
 
-# 5. Animation function
+# 7. Animation function
 print('Started')
+wavelengths_calibration = np.array([365, 405, 410, 434, 486, 500, 546, 579, 656])
+i = 0
+start = time.time()
 def animate(i, x, y):
     try:
         data = ser.readline()
         ser.flushInput()
 
         data2 = data.split(b',')
-        data3 = data2[1:201]
-        if len(data3) ==  200:
+        data3 = data2[10:250]
+        
+        if len(data3) ==  240:
             ax.clear()
-            
-            # Draw spectral lines
-            for i in range(len(wavelengths_calibration)):
-                rgb = wavelength_to_rgb(wavelengths_calibration[i], gamma=0.8)
-                ax.axvline(x=wavelengths_calibration[i], linewidth=2, color=np.array(rgb)/max(rgb))
-            
-            ax.set_ylim(0, 3000)
-            ax.set_xlim(300, 800)
+            ax.grid()
+            ax.set_ylim(0, 100)
+            #ax.set_xlim(300, 800)
+            plt.ticklabel_format(style='sci', axis='x', scilimits=(-9,-9))
             y_in = [int(p) for p in data3]
-            intensities = y_in / percent * 100
-            ax.plot(wavelengths, intensities)
+            real_intensities = percent * y_in
+            real_intensities = real_intensities / max(real_intensities) * 100
+            ax.plot(wavelengths, real_intensities)
+
+            # Draw spectral lines
+            for j in range(len(wavelengths_calibration)):
+                rgb = wavelength_to_rgb(wavelengths_calibration[j], gamma=0.8)
+                ax.axvline(x=wavelengths_calibration[j] * 10e-10, linewidth=2, color=np.array(rgb)/max(rgb))
+
+            i+=1
+            print(i, time.time() - start)
+
     except Exception as e:
         print(e)
 
-# 5. Animate data
-ani = animation.FuncAnimation(fig, animate, fargs=(x_in, y_in), interval=500)
+# 8. Animate data
+ani = animation.FuncAnimation(fig, animate, fargs=(wavelengths, y_in), interval=20)
+
 plt.show()
