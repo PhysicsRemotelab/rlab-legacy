@@ -1,11 +1,13 @@
 from importlib import import_module
 import os
 from flask import Flask, render_template, Response
+from flask_cors import CORS
 
 # import camera driver
 from camera_opencv import Camera
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/')
 def index():

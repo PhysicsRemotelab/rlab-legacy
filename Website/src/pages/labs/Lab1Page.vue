@@ -4,10 +4,10 @@
         <div class="jumbotron">
             <div class="container">
                 <div class="row">
-                    <div class="col-sm-11">
+                    <div class="col-sm-10">
                         <h1 class="display-4">Labor {{ id }} {{ lab.name }}</h1>
                     </div>
-                    <div class="col-sm-1">
+                    <div class="col-sm-2">
                         <button class="btn btn-raised btn-danger" @click='markFree'>Lõpeta</button>
                     </div>
                 </div>
@@ -18,6 +18,7 @@
                     <div class="card h-100">
                         <div class="card-body">
                             <h5 class="card-title">Kaamera</h5>
+                            <img class="card-img-top" :src='WEBCAM1_SERVICE'>
                         </div>
                     </div>
                 </div>
@@ -52,12 +53,13 @@ import io from 'socket.io-client'
 import { getRemainingTime } from '../../helpers/helpers'
 import VueCountdown from '@chenfengyuan/vue-countdown'
 import Chart from 'chart.js';
-import { SPECTROMETER_SERVICE } from '../../constants'
+import { SPECTROMETER_SERVICE, WEBCAM1_SERVICE } from '../../constants'
 
 var data = {
     accessTokenValid: false,
     lab: {},
-    time: 0
+    time: 0,
+    WEBCAM1_SERVICE
 }
 
 export default {

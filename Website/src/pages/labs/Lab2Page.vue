@@ -4,10 +4,10 @@
         <div class="jumbotron">
             <div class="container">
                 <div class="row">
-                    <div class="col-sm-11">
+                    <div class="col-sm-10">
                         <h1 class="display-4">Labor {{ id }} {{ lab.name }}</h1>
                     </div>
-                    <div class="col-sm-1">
+                    <div class="col-sm-2">
                         <button class="btn btn-raised btn-danger" @click='markFree'>Lõpeta</button>
                     </div>
                 </div>
@@ -18,7 +18,7 @@
                     <div class="card h-100">
                         <div class="card-body">
                             <h5 class="card-title">Kaamera</h5>
-                             <img id="webcam2" class="card-img-top" :src=url>
+                            <img id='webcam2' class="card-img-top" :src=WEBCAM2_SERVICE>
                         </div>
                     </div>
                 </div>
@@ -54,7 +54,8 @@ import io from 'socket.io-client'
 import { getRemainingTime } from '../../helpers/helpers'
 import VueCountdown from '@chenfengyuan/vue-countdown'
 import { range } from '../../helpers/range'
-import Chart from 'chart.js';
+import Chart from 'chart.js'
+import { WEBCAM2_SERVICE } from '../../constants'
 
 export default {
     components: {
@@ -72,8 +73,10 @@ export default {
             accessTokenValid: false,
             lab: {},
             time: 0,
-            url: 'http://localhost:8081/img/heatcam.jpg',
-            updatingGraph: false
+            WEBCAM2_SERVICE,
+            //url: 'http://localhost:8081/img/heatcam.jpg',
+            updatingGraph: false,
+            chart: null
         }
     },
     created() {
@@ -120,6 +123,7 @@ export default {
             // 1. Get image location
             var output = document.getElementById('webcam2')
             var img = new Image()
+            img.crossOrigin = 'Anonymous';
             img.src = output.src
             
             // 2. Create in memory canvas for image parsing
@@ -149,16 +153,19 @@ export default {
                 rmeans[i] = pxvals / phivals.length
                 pxvals = 0
             }
-
+            // 9. Prepare data for graph
             var graphData = new Array(rvals.length).fill(0)
             for (var k = 0; k < rvals.length; k++) {
                 graphData[k] = { x: rvals[k], y: rmeans[k] }
             }
-
             console.log(graphData)
-            var chart = buildChart()
-            chart.data.datasets[0].data = graphData
-            chart.update()
+            // 10. Destroy old graph
+            if (this.chart != null)
+                this.chart.destroy()
+            // 11. Draw graph
+            this.chart = buildChart()
+            this.chart.data.datasets[0].data = graphData
+            this.chart.update()
         }
     }
 }
