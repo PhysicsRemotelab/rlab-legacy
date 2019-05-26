@@ -32,12 +32,12 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-sm-12 p-2">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Spektromeeter</h5>
-                        <canvas id="myChart" width="200" height="100"></canvas>
+                <div class="col-sm-12 p-2">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Spektromeeter</h5>
+                            <canvas id="myChart" width="200" height="100"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -52,6 +52,7 @@ import io from 'socket.io-client'
 import { getRemainingTime } from '../../helpers/helpers'
 import VueCountdown from '@chenfengyuan/vue-countdown'
 import Chart from 'chart.js';
+import { SPECTROMETER_SERVICE } from '../../constants'
 
 var data = {
     accessTokenValid: false,
@@ -104,7 +105,7 @@ export default {
             })
         },
         startSpectrometer: function() {
-            var ws = new WebSocket('ws://127.0.0.1:5678/')
+            var ws = new WebSocket(SPECTROMETER_SERVICE)
             var chart = buildChart()
             ws.onmessage = function (event) {
                 var resp = JSON.parse(event.data)
