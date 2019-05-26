@@ -30,6 +30,7 @@
                                 <template v-if='time != 0' slot-scope="props">Lõpetamiseni jäänud：{{ props.hours }} h {{ props.minutes }} m {{ props.seconds }}.{{ Math.floor(props.milliseconds / 100) }} s.</template>
                             </countdown>
                             <button class="btn btn-raised btn-success" @click='startSpectrometer'>Käivita spektromeeter</button>
+                            <button class="btn btn-raised btn-success" @click='saveResult'>Salvesta andmebaasi</button>
                         </div>
                     </div>
                 </div>
@@ -59,7 +60,9 @@ var data = {
     accessTokenValid: false,
     lab: {},
     time: 0,
-    WEBCAM1_SERVICE
+    WEBCAM1_SERVICE,
+    graphData: {},
+    accessToken: window.localStorage.getItem('access_token')
 }
 
 export default {
@@ -77,8 +80,7 @@ export default {
         return data
     },
     created() {
-        const accessToken = window.localStorage.getItem('access_token')
-        var apidata = { 'id': this.$props.id, 'access_token': accessToken }
+        var apidata = { 'id': this.$props.id, 'access_token': this.accessToken }
         RestService.accessToken(apidata)
             .then(response => {
                 console.log(response.data)
@@ -94,6 +96,16 @@ export default {
             })
     },
     methods: {
+        saveResult: function() {
+            var apidata = { 'lab_id': this.$props.id, 'access_token': this.accessToken, 'results': this.graphData }
+            RestService.postMeasurementsAPI(apidata)
+            .then(response => {
+                console.log(response.data)
+            })
+            .catch(error => {
+                console.log('Error:', error.response)
+            })
+        },
         markFree: function() {
             const accessToken = window.localStorage.getItem('access_token')
             var apidata = { 'id': this.$props.id, 'access_token': accessToken }
@@ -114,6 +126,7 @@ export default {
                 console.log(resp.data)
                 chart.data.datasets[0].data = resp.data
                 chart.update()
+                this.graphData = resp.data
             }
         }
     }

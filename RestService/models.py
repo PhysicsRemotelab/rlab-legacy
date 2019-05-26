@@ -27,7 +27,7 @@ class Lab(BaseModel):
 class Measurement(BaseModel):
     id = PrimaryKeyField(null=False)
     lab_id = ForeignKeyField(Lab, backref='measurements')
-    user_id = ForeignKeyField(User, backref='measurements')
+    access_token = CharField(max_length=1000, default='')
     results = JSONField()
     created = DateTimeField(default=datetime.datetime.now)
     updated = DateTimeField(default=datetime.datetime.now)

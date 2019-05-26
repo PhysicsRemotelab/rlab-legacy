@@ -31,6 +31,7 @@
                             </countdown>
                             <button v-if='!updatingGraph' class="btn btn-raised btn-success" @click='startInterval'>Joonista graafik</button>
                             <button v-else class="btn btn-raised btn-danger" @click='stopInterval'>Peata graafik</button>
+                            <button class="btn btn-raised btn-success" @click='saveResult'>Salvesta andmebaasi</button>
                         </div>
                     </div>
                 </div>
@@ -76,12 +77,13 @@ export default {
             WEBCAM2_SERVICE,
             //url: 'http://localhost:8081/img/heatcam.jpg',
             updatingGraph: false,
-            chart: null
+            chart: null,
+            graphData: {},
+            accessToken: window.localStorage.getItem('access_token')
         }
     },
     created() {
-        const accessToken = window.localStorage.getItem('access_token')
-        var apidata = { 'id': this.$props.id, 'access_token': accessToken }
+        var apidata = { 'id': this.$props.id, 'access_token': this.accessToken }
         RestService.accessToken(apidata)
             .then(response => {
                 console.log(response.data)
@@ -98,6 +100,16 @@ export default {
 
     },
     methods: {
+        saveResult: function() {
+            var apidata = { 'lab_id': this.$props.id, 'access_token': this.accessToken, 'results': this.graphData }
+            RestService.postMeasurementsAPI(apidata)
+            .then(response => {
+                console.log(response.data)
+            })
+            .catch(error => {
+                console.log('Error:', error.response)
+            })
+        },
         markFree: function() {
             const accessToken = window.localStorage.getItem('access_token')
             var apidata = { 'id': this.$props.id, 'access_token': accessToken }
@@ -159,6 +171,7 @@ export default {
                 graphData[k] = { x: rvals[k], y: rmeans[k] }
             }
             console.log(graphData)
+            this.graphData = graphData
             // 10. Destroy old graph
             if (this.chart != null)
                 this.chart.destroy()
@@ -166,6 +179,8 @@ export default {
             this.chart = buildChart()
             this.chart.data.datasets[0].data = graphData
             this.chart.update()
+            
+
         }
     }
 }

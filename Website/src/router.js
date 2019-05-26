@@ -7,7 +7,6 @@ import MeasurementsPage from './pages/MeasurementsPage'
 import LabsPage from './pages/LabsPage'
 import Lab1Page from './pages/labs/Lab1Page'
 import Lab2Page from './pages/labs/Lab2Page'
-import Lab3Page from './pages/labs/Lab3Page'
 
 Vue.use(VueRouter)
 
@@ -38,12 +37,6 @@ const routes = [
     name: 'lab-page-2',
     component: Lab2Page,
     props: (route) => ({ id: 2 })
-  },
-  {
-    path: '/lab3',
-    name: 'lab-page-3',
-    component: Lab3Page,
-    props: (route) => ({ id: 3 })
   },
   { 
     path: '*', 

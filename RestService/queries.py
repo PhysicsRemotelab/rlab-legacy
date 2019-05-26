@@ -87,8 +87,8 @@ def get_measurement(id):
     result = model_to_dict(query)
     return result
 
-def create_measurement(lab_id, user_id, results):
-    measurement = Measurement(lab_id=lab_id, user_id=user_id, results=results)
+def create_measurement(lab_id, access_token, results):
+    measurement = Measurement(lab_id=lab_id, access_token=access_token, results=results)
     measurement.save()
     return measurement
 

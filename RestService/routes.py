@@ -87,10 +87,10 @@ def get_measurement_route(index):
 @app_.route('/measurements/', methods=['POST'])
 def create_measurement_route():
     lab_id = request.json['lab_id']
-    user_id = request.json['user_id']
+    access_token = request.json['access_token']
     results = request.json['results']
     
-    measurement = create_measurement(lab_id, user_id, results)
+    measurement = create_measurement(lab_id, access_token, results)
     resp = measurement.save()
     return jsonify(resp)
 
