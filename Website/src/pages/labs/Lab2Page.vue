@@ -173,14 +173,13 @@ export default {
             console.log(graphData)
             this.graphData = graphData
             // 10. Destroy old graph
-            if (this.chart != null)
-                this.chart.destroy()
+            if (this.chart != null) {
+                // this.chart.destroy()
+            }
             // 11. Draw graph
             this.chart = buildChart()
             this.chart.data.datasets[0].data = graphData
             this.chart.update()
-            
-
         }
     }
 }

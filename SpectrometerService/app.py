@@ -11,9 +11,9 @@ import json
 x = (2.35 * np.linspace(10, 250, 240) + 319.16) * 10e-10
 
 # 2. Create model to describe uncalibrated line
-wavelength = np.round(np.genfromtxt('Helpers/xval.txt', delimiter='\n'))
+wavelength = np.round(np.genfromtxt('SpectrometerCalibration/xval.txt', delimiter='\n'))
 wavelength = wavelength * 10e-10
-intensity = np.genfromtxt('Helpers/yval.txt', delimiter=',')
+intensity = np.genfromtxt('SpectrometerCalibration/yval.txt', delimiter=',')
 uncalibrated_line = interpolate.interp1d(wavelength, intensity, kind='cubic')
 
 # 3. Create model to describe black body line 

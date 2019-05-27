@@ -23,7 +23,7 @@ import {  getRemainingTime } from '../helpers/helpers'
 
 const uuidv1 = require('uuid/v1')
 let accessToken = window.localStorage.getItem('access_token')
-if (accessToken === '') {
+if (accessToken === null) {
     accessToken = uuidv1()
     window.localStorage.setItem('access_token', accessToken)
 }

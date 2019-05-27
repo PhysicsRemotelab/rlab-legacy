@@ -3,7 +3,7 @@
         <AppHeader />
         <div class="jumbotron">
             <h1 class="display-4">Esileht</h1>
-            <p class="lead">Kaugjuhtivuslabori veebisait.</p>
+            <p class="lead">Kaugjuhtimislabori veebisait.</p>
         </div>
     </div>
 </template>
