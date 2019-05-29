@@ -31,12 +31,12 @@ coef_func = interpolate.interp1d(x, coef, kind='cubic')
 # 5. Calculate wavelengths and real intensities
 wavelengths = (2.35 * np.linspace(10, 250, 240) + 319.16) * 10e-10
 percent = coef_func(wavelengths)
-y_in = np.zeros((1, 201))
+y_in = np.zeros((0, 240))
 wavelengths = wavelengths * 10e+8
 
 # 6. Open serial port
 try:
-    ser = serial.Serial('COM3', baudrate=115200, timeout=1)
+    ser = serial.Serial('COM5', baudrate=115200, timeout=1)
 except Exception as e:
     print(e)
 

@@ -16,7 +16,7 @@ coef = np.divide(intensity_blackbody, intensity_uncalibrated)
 print(coef)
 intensity = coef * intensity_uncalibrated
 
-plt.title('Must keha temperatuuril T = 1972 K')
+plt.title('Must keha temperatuuril T = 1700 K')
 plt.xlabel("Lainepikkus (um)")
 plt.ylabel("Kiirgus (kW * sr-1 * m-2 * nm-1)")
 plt.ticklabel_format(style='sci', axis='x', scilimits=(0,0))

@@ -10,10 +10,10 @@ from wavelengthtorgb import wavelength_to_rgb
 x = (2.34 * np.linspace(10, 250, 240) + 316.19)
 
 # 2. Create model to describe uncalibrated line
-wavelength = np.round(np.genfromtxt('SpectrometerCalibration/xval.txt', delimiter='\n'))
-wavelength = wavelength * 10e-10
-intensity = np.genfromtxt('SpectrometerCalibration/yval.txt', delimiter=',')
-uncalibrated_line = interpolate.interp1d(wavelength, intensity, kind='cubic')
+#wavelength = np.round(np.genfromtxt('SpectrometerCalibration/xval.txt', delimiter='\n'))
+#wavelength = wavelength * 10e-10
+#intensity = np.genfromtxt('SpectrometerCalibration/yval.txt', delimiter=',')
+#uncalibrated_line = interpolate.interp1d(wavelength, intensity, kind='cubic')
 
 # 3. Create model to describe black body line 
 h = 6.626e-34
@@ -29,7 +29,7 @@ blackbody_line = 2.0*h*c**2 / ((x**5) * (np.exp(h*c/(x*k*T)) - 1.0)) * 10e-9
 
 # 5. Setup serial port
 try:
-    ser = serial.Serial('COM3', baudrate=115200, timeout=1)
+    ser = serial.Serial('COM5', baudrate=115200, timeout=1)
 except Exception as e:
     print(e)
     
