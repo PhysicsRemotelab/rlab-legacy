@@ -2,10 +2,11 @@ import matplotlib.pyplot as plt
 from scipy import stats
 import numpy as np
 
-pixels = [21, 37, 40, 50, 70, 72, 95, 110, 146]
-wavelengths = [365, 405, 410, 434, 486, 500, 546, 579, 656]
+pixels = [42, 50, 71, 148, 39, 51, 96, 110]
+wavelengths = [410, 434, 486, 656, 405, 435, 546, 578]
 slope, intercept, r_value, p_value, std_err = stats.linregress(pixels, wavelengths)
-
+print(slope)
+print(intercept)
 real_pixels = np.linspace(0, 150, 151)
 real_wavelengths = slope * real_pixels + intercept
 
