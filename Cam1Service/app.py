@@ -4,7 +4,7 @@ from flask import Flask, render_template, Response
 from flask_cors import CORS
 
 # import camera driver
-from camera_opencv import Camera
+from camera0 import BaseCamera
 
 app = Flask(__name__)
 CORS(app)
@@ -20,10 +20,17 @@ def gen(camera):
         frame = camera.get_frame()
         yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
-@app.route('/video_feed')
-def video_feed():
+@app.route('/video_feed0')
+def video_feed0():
     """Video streaming route. Put this in the src attribute of an img tag."""
-    return Response(gen(Camera()), mimetype='multipart/x-mixed-replace; boundary=frame')
+    cam = BaseCamera(0)
+    return Response(gen(cam), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@app.route('/video_feed1')
+def video_feed1():
+    """Video streaming route. Put this in the src attribute of an img tag."""
+    cam = BaseCamera(1)
+    return Response(gen(cam), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == '__main__':
     app.run(port=4001, threaded=True)
