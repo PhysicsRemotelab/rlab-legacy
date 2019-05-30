@@ -6,3 +6,5 @@ venv
 .vscode
 node_modules
 package-lock.json
+Website/dist/1.bundle.js
+Website/dist/bundle.js
