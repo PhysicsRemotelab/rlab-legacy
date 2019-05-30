@@ -2,6 +2,7 @@ RestService/__pycache__
 Cam1Service/__pycache__
 Cam2Service/__pycache__
 SpectrometerCalibration/__pycache__
+calibration/__pycache__
 venv
 .vscode
 node_modules

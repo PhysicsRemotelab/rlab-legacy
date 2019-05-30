@@ -6,7 +6,7 @@
   "scripts": {
     "build": "npx webpack --config webpack.config.prod.js",
     "dev": "webpack-dev-server --open --config webpack.config.dev.js",
-    "server": "node server/app.js"
+    "server": "node server.js"
   },
   "author": "Toomas Tahves",
   "license": "",
@@ -15,6 +15,8 @@
     "axios": "^0.18.0",
     "chart.js": "^2.8.0",
     "express": "^4.17.1",
+    "serve-static": "^1.14.1",
+    "socket.io-client": "^2.2.0",
     "uuid": "^3.3.2",
     "vue": "^2.6.8",
     "vue-router": "^3.0.2",
