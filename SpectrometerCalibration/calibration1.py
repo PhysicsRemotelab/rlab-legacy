@@ -10,7 +10,7 @@ print(intercept)
 real_pixels = np.linspace(0, 150, 151)
 real_wavelengths = slope * real_pixels + intercept
 
-plt.title('Lainepikkuste ja spkektromeetri anduri näidu sõltuvus')
+plt.title('Lainepikkuste ja spektromeetri näidu sõltuvus')
 plt.xlabel("Spektromeetri näit")
 plt.ylabel("Lainepikkus (nm)")
 plt.scatter(pixels, wavelengths)

@@ -4,7 +4,7 @@ import numpy as np
 
 # Hydrogen
 plt.figure(1)
-plt.title('Vesiniku spektrijooned')
+plt.title('Lainepikkus (nm)')
 plt.xlabel('Lainepikkus (nm)')
 plt.xticks([410, 434, 486, 656])
 frame1 = plt.gca()
@@ -22,7 +22,7 @@ plt.axvline(x=656, linewidth=2, color=np.array(rgb)/max(rgb))
 
 # Mercury
 plt.figure(2)
-plt.title('Elavhõbeda spektrijooned')
+plt.title('Lainepikkus (nm)')
 plt.xlabel('Lainepikkus (nm)')
 plt.xticks([404, 502, 546, 579])
 frame1 = plt.gca()

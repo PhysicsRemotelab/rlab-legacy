@@ -97,7 +97,14 @@ export default {
     },
     methods: {
         saveResult: function() {
-            var apidata = { 'lab_id': this.$props.id, 'access_token': this.accessToken, 'results': this.graphData }
+            var csvData = []
+            for(var i = 0; i < this.graphData.length; i++) {
+                var obj = this.graphData[i]
+                csvData.push([obj.x, obj.y])
+            }
+            csvData = csvData.join('\n')
+            
+            var apidata = { 'lab_id': this.$props.id, 'access_token': this.accessToken, 'results': csvData }
             RestService.postMeasurementsAPI(apidata)
             .then(response => {
                 console.log(response.data)

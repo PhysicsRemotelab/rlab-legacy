@@ -66,7 +66,7 @@ async def senddata(websocket, path):
             await asyncio.sleep(1)
         
 # Start server
-start_server = websockets.serve(senddata, '127.0.0.1', 5678)
+start_server = websockets.serve(senddata, '127.0.0.1', 3003)
 print('Started.')
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()
