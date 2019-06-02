@@ -75,7 +75,6 @@ export default {
             lab: {},
             time: 0,
             WEBCAM2_SERVICE,
-            //url: 'http://localhost:8081/img/heatcam.jpg',
             updatingGraph: false,
             chart: null,
             graphData: {},
@@ -131,7 +130,7 @@ export default {
         },
         startInterval: function() {
             const self = this
-            this.interval = setInterval(self.drawGraph, 1000)
+            this.interval = setInterval(self.drawGraph, 2000)
             this.updatingGraph = true
         },
         stopInterval: function() {
@@ -177,18 +176,23 @@ export default {
             for (var k = 0; k < rvals.length; k++) {
                 graphData[k] = { x: rvals[k], y: rmeans[k] }
             }
-            console.log(graphData)
             this.graphData = graphData
+
             // 10. Destroy old graph
             if (this.chart != null) {
-                // this.chart.destroy()
+                this.chart.destroy()
             }
+            console.log(rmeans)
             // 11. Draw graph
             this.chart = buildChart()
             this.chart.data.datasets[0].data = graphData
             this.chart.update()
         }
     }
+}
+
+function getSum(total, num) {
+  return total + num;
 }
 
 function buildChart() {
