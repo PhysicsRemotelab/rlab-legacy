@@ -39,7 +39,6 @@ export default {
         },
         downloadCSV: function(results) {
             const csvFile = new Blob([results], { type: 'text/csv' })
-
             const downloadLink =  document.createElement('a')
             downloadLink.download = `data.csv`
             downloadLink.href = window.URL.createObjectURL(csvFile)

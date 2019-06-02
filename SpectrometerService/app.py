@@ -12,7 +12,7 @@ x = (2.35 * np.linspace(0, 239, 240) + 319.16)
 
 # 6. Open serial port
 try:
-    ser = serial.Serial('COM5', baudrate=115200, timeout=1)
+    ser = serial.Serial('COM3', baudrate=115200, timeout=1)
 except Exception as e:
     print(e)
 
@@ -40,7 +40,7 @@ async def senddata(websocket, path):
             await asyncio.sleep(1)
         
 # Start server
-start_server = websockets.serve(senddata, '127.0.0.1', 3003)
+start_server = websockets.serve(senddata, '0.0.0.0', 3003)
 print('Started.')
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()

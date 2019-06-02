@@ -61,6 +61,7 @@ var data = {
     lab: {},
     time: 0,
     WEBCAM1_SERVICE,
+    socket: new WebSocket(SPECTROMETER_SERVICE),
     graphData: {},
     accessToken: window.localStorage.getItem('access_token')
 }
@@ -95,6 +96,10 @@ export default {
                 console.log('Error:', error.response)
             })
     },
+    beforeRouteLeave (to, from, next) {
+        this.socket.close()
+        next()
+    },
     methods: {
         saveResult: function() {
             var csvData = []
@@ -103,6 +108,7 @@ export default {
                 csvData.push([obj.x, obj.y])
             }
             csvData = csvData.join('\n')
+            console.log(csvData)
             
             var apidata = { 'lab_id': this.$props.id, 'access_token': this.accessToken, 'results': csvData }
             RestService.postMeasurementsAPI(apidata)
@@ -126,9 +132,11 @@ export default {
             })
         },
         startSpectrometer: function() {
-            var ws = new WebSocket(SPECTROMETER_SERVICE)
+            if(this.socket.readyState === 3) {
+                this.socket = new WebSocket(SPECTROMETER_SERVICE)
+            }
             var chart = buildChart()
-            ws.onmessage = function (event) {
+            this.socket.onmessage = function (event) {
                 var resp = JSON.parse(event.data)
                 console.log(resp.data)
                 chart.data.datasets[0].data = resp.data
@@ -173,7 +181,7 @@ function buildChart() {
                     display: true,
                     ticks: {
                         min: 350,
-                        max: 900,
+                        max: 850,
                         stepSize: 50
                     }
                 }],
@@ -181,8 +189,8 @@ function buildChart() {
                     display: true,
                     ticks: {
                         min: 0,
-                        max: 100,
-                        stepSize: 10
+                        max: 1000,
+                        stepSize: 100
                     }
                 }]
             }

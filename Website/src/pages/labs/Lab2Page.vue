@@ -39,7 +39,7 @@
                     <div class="card h-100">
                         <div class="card-body">
                             <h5 class="card-title">Graafik</h5>
-                            <div id="chart"></div>
+                            <canvas id="myChart2" width="200" height="100"></canvas>
                         </div>
                     </div>
                 </div>
@@ -108,7 +108,7 @@ export default {
                 csvData.push([obj.x, obj.y])
             }
             csvData = csvData.join('\n')
-            
+            console.log(csvData)
             var apidata = { 'lab_id': this.$props.id, 'access_token': this.accessToken, 'results': csvData }
             RestService.postMeasurementsAPI(apidata)
             .then(response => {
@@ -131,13 +131,8 @@ export default {
             })
         },
         startInterval: function() {
-            var data = []
-            var options = getOptions(data)
-            this.chart = new ApexCharts(document.querySelector("#chart"), options)
-
             const self = this
-            
-            this.interval = setInterval(self.drawApexGraph, 2000)
+            this.interval = setInterval(self.drawGraph, 2000)
             this.updatingGraph = true
         },
         stopInterval: function() {
@@ -161,15 +156,17 @@ export default {
             var rvals = range(30, 80, 1)
             var phivals = range(0, 2 * Math.PI, 1 * Math.PI / 180)
 
+            
             var rmeans = new Array(rvals.length).fill(0)
             var pxvals = 0
+
             // 4. Iterate over radius values
-            for (var i = 0; i < rvals.length; i++) {
+            for (let i = 0; i < rvals.length; i++) {
                 // 5. Iterate over angle values
-                for (var j = 0; j < phivals.length; j++) {
+                for (let j = 0; j < phivals.length; j++) {
                     // 6. Calculate (x,y) pixel values
-                    var xr = Math.round(rvals[i] * Math.sin(phivals[j]) + xc)
-                    var yr = Math.round(rvals[i] * Math.cos(phivals[j]) + yc)
+                    var xr = rvals[i] * Math.sin(phivals[j]) + xc
+                    var yr = rvals[i] * Math.cos(phivals[j]) + yc
                     // 7. Find color value from image
                     var px = context.getImageData(xr, yr, 1, 1).data[0]
                     pxvals += px
@@ -180,72 +177,83 @@ export default {
             }
             // 9. Prepare data for graph
             var graphData = new Array(rvals.length).fill(0)
+            console.log(rmeans)
             for (var k = 0; k < rvals.length; k++) {
                 graphData[k] = { x: rvals[k], y: rmeans[k] }
             }
             this.graphData = graphData
-
-
-
-        },
-        drawApexGraph: function() {
-
-            
+            if (this.chart != null) {
+                this.chart.destroy()
+            }
+            var chart = buildChart()
+            chart.data.datasets[0].data = graphData
+            chart.update()
         }
     }
 }
 
-
-function getOptions(data) {
-    var options = {
-        chart: {
-            height: 255,
-            type: 'line',
-            animations: {
-                enabled: true,
-                easing: 'linear',
-                dynamicAnimation: {
-                    speed: 1000
-                }
-            },
-            toolbar: {
-                show: false
-            },
-            zoom: {
-                enabled: false
-            }
-            },
-            dataLabels: {
-                enabled: false
-            },
-            stroke: {
-                curve: 'smooth'
-            },
-            series: [{
-                data: data
-            }],
-            title: {
-                text: 'Dynamic Updating Chart',
-                align: 'left'
-            },
-            markers: {
-                size: 0
-            },
-            xaxis: {
-                min: 0,
-                max: 50
-            },
-            yaxis: {
-                min: 0,
-                max: 255
-            },
-            legend: {
-                show: false
-            },
-        }
-    return options
+function getValues(rvals, phivals, xc, yc, i, j, context) {
+    return new Promise((resolve) => {
+        // 6. Calculate (x,y) pixel values
+        var xr = Math.round(rvals[i] * Math.sin(phivals[j]) + xc)
+        var yr = Math.round(rvals[i] * Math.cos(phivals[j]) + yc)
+        // 7. Find color value from image
+        var px = context.getImageData(xr, yr, 1, 1).data[0]
+        resolve(px)
+    })
 }
 
+function buildChart() {
+    var ctx = document.getElementById('myChart2').getContext('2d');
+    var chart = new Chart(ctx, {
+        type: 'scatter',
+        data: {
+            labels: [''],
+            datasets: [
+                {
+                    data: []
+                }
+            ]
+        },
+        options: {
+            legend: {
+                display: false
+            },
+            showLines: true,
+            animation: {
+                duration: 0 // general animation time
+            },
+            hover: {
+                animationDuration: 0 // duration of animations when hovering an item
+            },
+            responsiveAnimationDuration: 0,
+            elements: {
+                line: {
+                    tension: 0 // disables bezier curves
+                }
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    ticks: {
+                        min: 30,
+                        max: 100,
+                        stepSize: 5
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    ticks: {
+                        min: 0,
+                        max: 250,
+                        stepSize: 50
+                    }
+                }]
+            }
+        }
+    });
+    return chart
+}
 
 </script>
 
