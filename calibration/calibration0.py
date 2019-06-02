@@ -17,5 +17,3 @@ plt.scatter(pixels, wavelengths)
 plt.plot(real_pixels, real_wavelengths, 'r')
 plt.grid()
 plt.show()
-
-

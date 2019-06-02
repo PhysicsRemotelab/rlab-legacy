@@ -18,12 +18,11 @@ void setup(){
   pinMode(SPEC_ST, OUTPUT);
   pinMode(LASER_404, OUTPUT);
   pinMode(WHITE_LED, OUTPUT);
-
+  
   digitalWrite(SPEC_CLK, HIGH); // Set SPEC_CLK High
   digitalWrite(SPEC_ST, LOW); // Set SPEC_ST Low
 
   Serial.begin(115200); // Baud Rate set to 115200
-  
 }
 
 /*

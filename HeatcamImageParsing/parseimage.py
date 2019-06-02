@@ -19,7 +19,6 @@ for i in range(len(rvals)):
     rmeans[i] = avg
 
 print(rmeans)
-
 plt.plot(rvals, rmeans)
 plt.grid()
 plt.show()

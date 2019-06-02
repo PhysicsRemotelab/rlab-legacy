@@ -30,6 +30,8 @@ module.exports = {
       "keyword-spacing": "off",
       "curly": "off",
       "no-multi-spaces": "off",
-      "standard/object-curly-even-spacing": "off"
+      "standard/object-curly-even-spacing": "off",
+      "quotes": "off",
+      "comma-dangle": "off"
     }
 }

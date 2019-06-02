@@ -39,7 +39,7 @@
                     <div class="card h-100">
                         <div class="card-body">
                             <h5 class="card-title">Graafik</h5>
-                            <canvas id="myChart2" width="200" height="100"></canvas>
+                            <div id="chart"></div>
                         </div>
                     </div>
                 </div>
@@ -56,7 +56,9 @@ import { getRemainingTime } from '../../helpers/helpers'
 import VueCountdown from '@chenfengyuan/vue-countdown'
 import { range } from '../../helpers/range'
 import Chart from 'chart.js'
+import ApexCharts from 'apexcharts'
 import { WEBCAM2_SERVICE } from '../../constants'
+
 
 export default {
     components: {
@@ -129,8 +131,13 @@ export default {
             })
         },
         startInterval: function() {
+            var data = []
+            var options = getOptions(data)
+            this.chart = new ApexCharts(document.querySelector("#chart"), options)
+
             const self = this
-            this.interval = setInterval(self.drawGraph, 2000)
+            
+            this.interval = setInterval(self.drawApexGraph, 2000)
             this.updatingGraph = true
         },
         stopInterval: function() {
@@ -178,74 +185,68 @@ export default {
             }
             this.graphData = graphData
 
-            // 10. Destroy old graph
-            if (this.chart != null) {
-                this.chart.destroy()
-            }
-            console.log(rmeans)
-            // 11. Draw graph
-            this.chart = buildChart()
-            this.chart.data.datasets[0].data = graphData
-            this.chart.update()
+
+
+        },
+        drawApexGraph: function() {
+
+            
         }
     }
 }
 
-function getSum(total, num) {
-  return total + num;
+
+function getOptions(data) {
+    var options = {
+        chart: {
+            height: 255,
+            type: 'line',
+            animations: {
+                enabled: true,
+                easing: 'linear',
+                dynamicAnimation: {
+                    speed: 1000
+                }
+            },
+            toolbar: {
+                show: false
+            },
+            zoom: {
+                enabled: false
+            }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'smooth'
+            },
+            series: [{
+                data: data
+            }],
+            title: {
+                text: 'Dynamic Updating Chart',
+                align: 'left'
+            },
+            markers: {
+                size: 0
+            },
+            xaxis: {
+                min: 0,
+                max: 50
+            },
+            yaxis: {
+                min: 0,
+                max: 255
+            },
+            legend: {
+                show: false
+            },
+        }
+    return options
 }
 
-function buildChart() {
-    var ctx = document.getElementById('myChart2').getContext('2d');
-    var chart = new Chart(ctx, {
-        type: 'scatter',
-        data: {
-            labels: [''],
-            datasets: [
-                {
-                    data: []
-                }
-            ]
-        },
-        options: {
-            legend: {
-                display: false
-            },
-            showLines: true,
-            animation: {
-                duration: 0 // general animation time
-            },
-            hover: {
-                animationDuration: 0 // duration of animations when hovering an item
-            },
-            responsiveAnimationDuration: 0,
-            elements: {
-                line: {
-                    tension: 0 // disables bezier curves
-                }
-            },
-            scales: {
-                xAxes: [{
-                    display: true,
-                    ticks: {
-                        min: 30,
-                        max: 80,
-                        stepSize: 10
-                    }
-                }],
-                yAxes: [{
-                    display: true,
-                    ticks: {
-                        min: 0,
-                        max: 230,
-                        stepSize: 10
-                    }
-                }]
-            }
-        }
-    });
-    return chart
-}
+
 </script>
 
 <style>
