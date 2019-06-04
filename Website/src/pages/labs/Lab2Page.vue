@@ -56,7 +56,6 @@ import { getRemainingTime } from '../../helpers/helpers'
 import VueCountdown from '@chenfengyuan/vue-countdown'
 import { range } from '../../helpers/range'
 import Chart from 'chart.js'
-import ApexCharts from 'apexcharts'
 import { WEBCAM2_SERVICE } from '../../constants'
 
 
