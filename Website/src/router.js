@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import LandingPage from './pages/LandingPage'
 import PageNotFound from './pages/PageNotFound'
+import TestPage from './pages/TestPage'
 
 import MeasurementsPage from './pages/MeasurementsPage'
 import LabsPage from './pages/LabsPage'
@@ -41,7 +42,12 @@ const routes = [
   { 
     path: '*', 
     component: PageNotFound
-  }
+  },
+  { 
+    path: '/test', 
+    name: 'test-page',
+    component: TestPage 
+  },
 ]
 
 const router = new VueRouter({

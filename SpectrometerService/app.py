@@ -25,8 +25,11 @@ async def senddata(websocket, path):
         data2 = data.split(b',')
         data3 = data2[10:250]
         if len(data3) ==  240:
-            y_in = [int(p) for p in data3]
-            
+            try:
+                y_in = [int(p) for p in data3]
+            except Exception as e:
+                print(e)
+
             # 9. Convert data for javscript chart
             points = []
             for i in range(240):

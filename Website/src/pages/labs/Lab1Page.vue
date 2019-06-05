@@ -56,15 +56,6 @@ import VueCountdown from '@chenfengyuan/vue-countdown'
 import Chart from 'chart.js';
 import { SPECTROMETER_SERVICE, WEBCAM1_SERVICE } from '../../constants'
 
-var data = {
-    accessTokenValid: false,
-    lab: {},
-    time: 0,
-    WEBCAM1_SERVICE,
-    socket: new WebSocket(SPECTROMETER_SERVICE),
-    graphData: {},
-    accessToken: window.localStorage.getItem('access_token')
-}
 
 export default {
     components: {
@@ -78,7 +69,15 @@ export default {
         }
     },
     data() {
-        return data
+        return {
+            accessTokenValid: false,
+            lab: {},
+            time: 0,
+            WEBCAM1_SERVICE,
+            socket: new WebSocket(SPECTROMETER_SERVICE),
+            graphData: {},
+            accessToken: window.localStorage.getItem('access_token')
+        }
     },
     created() {
         var apidata = { 'id': this.$props.id, 'access_token': this.accessToken }
@@ -135,7 +134,7 @@ export default {
             if(this.socket.readyState === 3) {
                 this.socket = new WebSocket(SPECTROMETER_SERVICE)
             }
-            var chart = buildChart()
+            var chart = buildChart(this.spectrometerData)
             this.socket.onmessage = function (event) {
                 var resp = JSON.parse(event.data)
                 console.log(resp.data)
@@ -147,7 +146,7 @@ export default {
     }
 }
 
-function buildChart() {
+function buildChart(spectrometerData) {
     var ctx = document.getElementById('myChart').getContext('2d');
     var chart = new Chart(ctx, {
         type: 'scatter',
@@ -155,7 +154,7 @@ function buildChart() {
             labels: [''],
             datasets: [
                 {
-                    data: data.spectrometerData
+                    data: spectrometerData
                 }
             ]
         },

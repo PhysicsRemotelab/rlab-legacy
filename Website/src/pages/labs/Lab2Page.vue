@@ -18,7 +18,7 @@
                     <div class="card h-100">
                         <div class="card-body">
                             <h5 class="card-title">Kaamera</h5>
-                            <img id='webcam2' class="card-img-top" :src=WEBCAM2_SERVICE>
+                            <img id='webcam2' class="card-img-top" :src=webcamService>
                         </div>
                     </div>
                 </div>
@@ -58,7 +58,6 @@ import { range } from '../../helpers/range'
 import Chart from 'chart.js'
 import { WEBCAM2_SERVICE } from '../../constants'
 
-
 export default {
     components: {
         AppHeader,
@@ -75,11 +74,13 @@ export default {
             accessTokenValid: false,
             lab: {},
             time: 0,
-            WEBCAM2_SERVICE,
+            webcamService: WEBCAM2_SERVICE,
             updatingGraph: false,
             chart: null,
             graphData: {},
-            accessToken: window.localStorage.getItem('access_token')
+            accessToken: window.localStorage.getItem('access_token'),
+            rmeans: new Array(71).fill(0),
+            img: new Image()
         }
     },
     created() {
@@ -97,7 +98,12 @@ export default {
             .catch(error => {
                 console.log('Error:', error.response)
             })
-
+    },
+    beforeRouteLeave (to, from, next) {
+        this.webcamService = ''
+        this.img.src = ''
+        this.stopInterval()
+        next()
     },
     methods: {
         saveResult: function() {
@@ -107,57 +113,60 @@ export default {
                 csvData.push([obj.x, obj.y])
             }
             csvData = csvData.join('\n')
-            console.log(csvData)
+            
             var apidata = { 'lab_id': this.$props.id, 'access_token': this.accessToken, 'results': csvData }
             RestService.postMeasurementsAPI(apidata)
-            .then(response => {
-                console.log(response.data)
-            })
-            .catch(error => {
-                console.log('Error:', error.response)
-            })
+                .then(response => {
+                    console.log('Lab2 saveResult success')
+                })
+                .catch(error => {
+                    console.log('Error:', error.response)
+                })
         },
         markFree: function() {
             const accessToken = window.localStorage.getItem('access_token')
             var apidata = { 'id': this.$props.id, 'access_token': accessToken }
             RestService.freeLab(apidata)
-            .then(response => {
-                console.log(response.data)
-                this.$router.push('labs')
-            })
-            .catch(error => {
-                console.log('Error:', error.response)
-            })
+                .then(response => {
+                    console.log(response.data)
+                    this.$router.push('labs')
+                })
+                .catch(error => {
+                    console.log('Error:', error.response)
+                })
         },
         startInterval: function() {
+            console.log('Lab2 startInterval')
             const self = this
             this.interval = setInterval(self.drawGraph, 2000)
             this.updatingGraph = true
         },
         stopInterval: function() {
+            console.log('Lab2 stopInterval')
             clearInterval(this.interval)
             this.updatingGraph = false
         },
         drawGraph: function() {
+            console.log('Lab2 drawGraph')
             // 1. Get image location
             var output = document.getElementById('webcam2')
-            var img = new Image()
-            img.crossOrigin = 'Anonymous';
-            img.src = output.src
-            
+            //var img = new Image()
+            this.img.crossOrigin = 'Anonymous'
+            this.img.src = output.src
+
             // 2. Create in memory canvas for image parsing
-            var context = document.createElement('canvas').getContext('2d')
-            context.drawImage(img, 0, 0)
+            var canvas = document.createElement('canvas')
+            var context = canvas.getContext('2d')
+            context.drawImage(this.img, 0, 0, 320, 240)
+            //document.body.appendChild(canvas)
 
             // 3. Define initial values
             var xc = 160
             var yc = 120
-            var rvals = range(30, 80, 1)
-            var phivals = range(0, 2 * Math.PI, 1 * Math.PI / 180)
-
-            
-            var rmeans = new Array(rvals.length).fill(0)
+            var rvals = range(10, 80, 1)
+            var phivals = range(0, 2 * Math.PI, 1 * Math.PI / 15)
             var pxvals = 0
+            var graphData = new Array(rvals.length).fill(0)
 
             // 4. Iterate over radius values
             for (let i = 0; i < rvals.length; i++) {
@@ -171,22 +180,24 @@ export default {
                     pxvals += px
                 }
                 // 8. Calculate average color value on radius
-                rmeans[i] = pxvals / phivals.length
+                this.rmeans[i] = pxvals / phivals.length
                 pxvals = 0
             }
-            // 9. Prepare data for graph
-            var graphData = new Array(rvals.length).fill(0)
-            console.log(rmeans)
-            for (var k = 0; k < rvals.length; k++) {
-                graphData[k] = { x: rvals[k], y: rmeans[k] }
+            
+            // Hack: avoid zero values, because not always getting image
+            if(this.rmeans[0] !== 0) {
+                // 9. Prepare data for graph
+                for (var k = 0; k < rvals.length; k++) {
+                    graphData[k] = { x: rvals[k], y: this.rmeans[k] }
+                }
+                this.graphData = graphData
+                // 10. Build graph and update data
+                if(this.chart == null) {
+                    this.chart = buildChart()
+                }
+                this.chart.data.datasets[0].data = graphData
+                this.chart.update()
             }
-            this.graphData = graphData
-            if (this.chart != null) {
-                this.chart.destroy()
-            }
-            var chart = buildChart()
-            chart.data.datasets[0].data = graphData
-            chart.update()
         }
     }
 }
@@ -236,7 +247,7 @@ function buildChart() {
                     display: true,
                     ticks: {
                         min: 30,
-                        max: 100,
+                        max: 80,
                         stepSize: 5
                     }
                 }],
