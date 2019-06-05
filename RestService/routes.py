@@ -1,12 +1,17 @@
 import json
 from datetime import date
-from flask import jsonify, Blueprint, request
+from flask import jsonify, Blueprint, request, Response
 from queries import *
 from models import Lab
 from playhouse.shortcuts import model_to_dict, dict_to_model
 from peewee import DateTimeField
 
 app_ = Blueprint('app_', __name__)
+
+# Index
+@app_.route('/', methods=['GET'])
+def get_index():
+    return Response('REST API service running.')
 
 # User routes
 @app_.route('/users/', methods=['GET'])

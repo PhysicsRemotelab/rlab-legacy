@@ -23,13 +23,14 @@ def video_feed():
         return Response(gen(cam), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == '__main__':
-        # Get port number from command line
+        # Get parameters from command line
         parser = ArgumentParser()
         parser.add_argument('-port')
+        parser.add_argument('-host')
         parser.add_argument('-camera')
         args = parser.parse_args()
 
-        # Get camera id from command line
+        # Get camera id
         app.config['camera'] = int(args.camera)
 
-        app.run(port = int(args.port), threaded=True)
+        app.run(host = args.host, port = int(args.port), threaded=True)
