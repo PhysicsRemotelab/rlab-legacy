@@ -1,0 +1,52 @@
+Setting up Fedora for remote lab.
+
+1. Install Nano text editor
+sudo dnf install nano
+
+2. Install PostgreSQL on Fedora 30
+https://tecadmin.net/install-postgresql-11-on-fedora/
+Set up password too.
+
+3. Change Postgres authentication to MD5, so you can login using username and password
+sudo nano /var/lib/pgsql/11/data/pg_hba.conf 
+local   all             all                                     md5
+host    all             all             127.0.0.1/32            md5
+host    all             all             ::1/128                 md5
+Restart database service:
+service postgresql-11.service restart
+
+4. Login back to database and issue commands:
+CREATE DATABASE remotelab;
+create user remotelabuser with encrypted password 'password';
+GRANT ALL PRIVILEGES ON DATABASE remotelab TO remotelabuser;
+Quit database and test new user:
+psql -h localhost -U remotelabuser -W remotelab
+
+5. Install pgadmin3
+sudo dnf install pgadmin3
+To run type in terminal: 
+pgadmin3
+
+6. Install nodejs
+sudo dnf install nodejs
+
+7.Install Python developer package (later needed for psycopg2 driver)
+sudo yum install python-devel
+sudo yum install postgresql-devel
+sudo yum install make automake gcc gcc-c++ kernel-devel
+
+maybe sudo dnf install @development-tools
+
+8. Install Visual Studio Code
+https://code.visualstudio.com/docs/setup/linux
+
+9.RealVNC client
+https://www.realvnc.com/en/connect/download/viewer/linux/
+
+10. Port forward
+sudo firewall-cmd --zone=FedoraWorkstation --add-masquerade
+sudo firewall-cmd --zone=internal --remove-masquerade
+sudo firewall-cmd --zone="FedoraWorkstation" --add-forward-port=port=8081:proto=tcp:toport=8081:toaddr=10.42.0.75
+sudo firewall-cmd --reload
+
+
