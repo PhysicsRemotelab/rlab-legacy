@@ -79,8 +79,7 @@ export default {
             chart: null,
             graphData: {},
             accessToken: window.localStorage.getItem('access_token'),
-            rmeans: new Array(71).fill(0),
-            img: new Image()
+            rmeans: new Array(71).fill(0)
         }
     },
     created() {
@@ -100,8 +99,6 @@ export default {
             })
     },
     beforeRouteLeave (to, from, next) {
-        this.webcamService = ''
-        this.img.src = ''
         this.stopInterval()
         next()
     },
@@ -150,14 +147,18 @@ export default {
             console.log('Lab2 drawGraph')
             // 1. Get image location
             var output = document.getElementById('webcam2')
-            //var img = new Image()
-            this.img.crossOrigin = 'Anonymous'
-            this.img.src = output.src
+            var img = new Image()
+            img.crossOrigin = 'Anonymous'
+            img.src = output.src
 
             // 2. Create in memory canvas for image parsing
             var canvas = document.createElement('canvas')
+            canvas.height = img.height
+            canvas.width = img.width
             var context = canvas.getContext('2d')
-            context.drawImage(this.img, 0, 0, 320, 240)
+            context.drawImage(img, 0, 0)
+            var self = this
+
             //document.body.appendChild(canvas)
 
             // 3. Define initial values
@@ -183,11 +184,19 @@ export default {
                 this.rmeans[i] = pxvals / phivals.length
                 pxvals = 0
             }
-            
-            // Hack: avoid zero values, because not always getting image
+            if(this.rmeans[0] === 0) {
+                console.log('zero')
+            }
+            // Hack: avoid zero values, because not always getting image right
             if(this.rmeans[0] !== 0) {
+                // Convert to natural logarithm
+                for (let k = 0; k < rvals.length; k++) {
+                    let newr = Math.log(rvals[k]) / Math.LN10
+                    rvals[k] = newr
+                }
+
                 // 9. Prepare data for graph
-                for (var k = 0; k < rvals.length; k++) {
+                for (let k = 0; k < rvals.length; k++) {
                     graphData[k] = { x: rvals[k], y: this.rmeans[k] }
                 }
                 this.graphData = graphData
@@ -246,8 +255,8 @@ function buildChart() {
                 xAxes: [{
                     display: true,
                     ticks: {
-                        min: 30,
-                        max: 80,
+                        min: 0,
+                        max: 5,
                         stepSize: 5
                     }
                 }],

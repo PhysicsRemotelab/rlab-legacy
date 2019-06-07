@@ -6,7 +6,7 @@ import json
 from argparse import ArgumentParser
 
 # 1. Convert pixels into wavelengths
-x = (2.35 * np.linspace(0, 239, 240) + 319.16)
+x = (2.35 * np.linspace(0, 269, 270) + 319.16)
 
 # 2. Open serial port
 try:
@@ -23,10 +23,10 @@ async def senddata(websocket, path):
         data2 = data.split(b',')
 
         # Instead of all 288, take 10-250.
-        data3 = data2[10:250]
+        data3 = data2[5:275]
 
         # Check if 240 datapoints are returned
-        if len(data3) ==  240:
+        if len(data3) ==  270:
             try:
                 y_in = [int(p) for p in data3]
             except Exception as e:
@@ -42,7 +42,7 @@ async def senddata(websocket, path):
             # 6. Send data to client
             await websocket.send(data)
             # 7. Wait 1 second before sending next dataset
-            await asyncio.sleep(1)
+            await asyncio.sleep(2)
         
 # Start server
 

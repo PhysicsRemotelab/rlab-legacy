@@ -34,7 +34,7 @@ def delete_user(id):
 
 # Lab queries
 def get_labs():
-    query = Lab.select()
+    query = Lab.select().order_by(Lab.id)
     labs = []
     for lab in query:
         # Update taken status if access_token has expired

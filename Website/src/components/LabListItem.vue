@@ -2,7 +2,7 @@
     <div class="col-sm-4 p-1">
         <div class="card h-100">
             <div class="card-body">
-                <h5 class="card-title">{{ lab.name }}</h5>
+                <h5 class="card-title">{{ lab.id }}. {{ lab.name }}</h5>
                 <p class="card-text"> {{ lab.description }}</p>
             </div>
             <div class="card-footer text-muted h-100">

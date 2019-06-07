@@ -102,6 +102,7 @@ export default {
     methods: {
         saveResult: function() {
             var csvData = []
+            console.log(this.graphData)
             for(var i = 0; i < this.graphData.length; i++) {
                 var obj = this.graphData[i]
                 csvData.push([obj.x, obj.y])
@@ -135,12 +136,13 @@ export default {
                 this.socket = new WebSocket(SPECTROMETER_SERVICE)
             }
             var chart = buildChart(this.spectrometerData)
+            var self = this
             this.socket.onmessage = function (event) {
                 var resp = JSON.parse(event.data)
-                console.log(resp.data)
+                //console.log(resp.data)
                 chart.data.datasets[0].data = resp.data
                 chart.update()
-                this.graphData = resp.data
+                self.graphData = resp.data
             }
         }
     }
